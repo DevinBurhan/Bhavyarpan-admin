@@ -13,10 +13,12 @@ const SignIn = () => {
     const isLoading = useSelector((state) => state.auth.loading);
     const [form] = Form.useForm();
 
-    const handleSubmit = useCallback(() => {
-        dispatch(login());
-        history.push("/admin");
-    }, [history, dispatch]);
+    const handleSubmit = async (value) => {
+        let resp = await dispatch(login(value));
+        if (resp) {
+            history.push("/admin");
+        }
+    };
 
     return (
         <AuthWrapper>
@@ -29,8 +31,13 @@ const SignIn = () => {
                         Sign in to <span className="color-secondary">Vendor</span>
                     </Heading>
                     <Form.Item
-                        name="username"
-                        rules={[{ message: "Please input your username or Email!", required: true }]}
+                        name="email"
+                        rules={[
+                            {
+                                message: "Please input your Email!",
+                                required: true,
+                            },
+                        ]}
                         initialValue="name@example.com"
                         label="Username or Email Address"
                     >

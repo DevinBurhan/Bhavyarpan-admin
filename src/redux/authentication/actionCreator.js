@@ -7,14 +7,21 @@ const { API } = require("../../config/api/index");
 
 const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr } = actions;
 
-const login = () => {
+const login = (payload) => {
     return async (dispatch) => {
         try {
-            dispatch(loginBegin());
-            setTimeout(() => {
-                Cookies.set("logedIn", true);
-                return dispatch(loginSuccess(true));
-            }, 1000);
+            const resp = await DataService.post(API.auth.login, payload);
+            if (resp?.data?.success) {
+                dispatch(loginBegin());
+                setTimeout(() => {
+                    Cookies.set("logedIn", true);
+                    return dispatch(loginSuccess(true));
+                }, 1000);
+                return true;
+            } else {
+                message.error(resp.data.message);
+                return false;
+            }
         } catch (err) {
             dispatch(loginErr(err));
         }
@@ -38,6 +45,7 @@ const logOut = () => {
         try {
             dispatch(logoutBegin());
             removeItem("access_token");
+            localStorage.clear();
             Cookies.remove("logedIn");
             dispatch(logoutSuccess(null));
         } catch (err) {

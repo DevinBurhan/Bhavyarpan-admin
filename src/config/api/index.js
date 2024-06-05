@@ -5,7 +5,7 @@
  */
 const API = {
     auth: {
-        login: "/login",
+        login: "login",
         signUp: "/signup",
     },
 };
