@@ -11,15 +11,17 @@ const login = (payload) => {
     return async (dispatch) => {
         try {
             const resp = await DataService.post(API.auth.login, payload);
-            if (resp?.data?.success) {
+            console.log("resp", resp);
+            if (resp?.data?.status) {
                 dispatch(loginBegin());
                 setTimeout(() => {
                     Cookies.set("logedIn", true);
+                    message.success(resp.data.message);
                     return dispatch(loginSuccess(true));
                 }, 1000);
                 return true;
             } else {
-                message.error(resp.data.message);
+                message.error("Email and password are incorrect");
                 return false;
             }
         } catch (err) {
