@@ -5,21 +5,19 @@ import { UploadOutlined, SearchOutlined, PlusOutlined, EditOutlined, DeleteOutli
 const App = () => {
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [categories, setCategories] = useState([]);
-    const [editingCategory, setEditingCategory] = useState(null); // Track the category being edited
+    const [editingCategory, setEditingCategory] = useState(null);
 
     const toggleCategoryForm = () => {
         setShowCategoryForm(!showCategoryForm);
-        setEditingCategory(null); // Reset editingCategory when closing the form
+        setEditingCategory(null);
     };
 
     const onFinish = (values) => {
         console.log("Success:", values);
         if (editingCategory !== null) {
-            // If editing an existing category, update it
             const updatedCategories = categories.map((cat, index) => (index === editingCategory ? values : cat));
             setCategories(updatedCategories);
         } else {
-            // Otherwise, add a new category
             setCategories([...categories, values]);
         }
         toggleCategoryForm();
