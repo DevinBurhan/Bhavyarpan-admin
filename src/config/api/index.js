@@ -5,8 +5,14 @@
  */
 const API = {
     auth: {
-        login: "login",
+        login: "auth/login",
         signUp: "/signup",
+    },
+    category: {
+        add: "category/create",
+        update: "category/+id",
+        get: "category/list",
+        delete: "category/",
     },
 };
 

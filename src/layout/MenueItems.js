@@ -44,7 +44,7 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu, events }) => {
                 </NavLink>
             </Menu.Item>
             <Menu.Item icon={!topMenu && <FeatherIcon icon="activity" />} key="category">
-                <NavLink onClick={toggleCollapsed} to={`${path}`}>
+                <NavLink onClick={toggleCollapsed} to={`/category`}>
                     Category
                 </NavLink>
             </Menu.Item>
