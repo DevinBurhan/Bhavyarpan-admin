@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import actions from "./actions";
 import { message } from "antd";
-import { removeItem } from "../../utility/localStorageControl";
+import { removeItem, setItem } from "../../utility/localStorageControl";
 const { DataService } = require("../../config/dataService/dataService");
 const { API } = require("../../config/api/index");
 
@@ -15,6 +15,7 @@ const login = (payload) => {
             if (resp?.data?.status) {
                 dispatch(loginBegin());
                 setTimeout(() => {
+                    setItem("access_token", resp.data.data.token);
                     Cookies.set("logedIn", true);
                     message.success(resp.data.message);
                     return dispatch(loginSuccess(true));

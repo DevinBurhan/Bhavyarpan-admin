@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getItem } from "../../utility/localStorageControl";
 
-const API_ENDPOINT = "http://localhost:4840/auth/";
+const API_ENDPOINT = "http://localhost:4840/";
 
 const authHeader = () => ({
     Authorization: `Bearer ${getItem("access_token")}`,

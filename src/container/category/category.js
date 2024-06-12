@@ -1,37 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Upload, Form, Input, message, Modal, Table, Space } from "antd";
 import { UploadOutlined, SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { addCategoiryAPI, getCategoiryAPI, updateCategoiryAPI, deleteCategoiryAPI } from "../../redux/categoryredux/actionCreator";
 
-const App = () => {
+const CategoryPage = () => {
+    const dispatch = useDispatch();
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [categories, setCategories] = useState([]);
-    const [editingCategory, setEditingCategory] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+    const data = useSelector((state) => state);
+    console.log("vvv", data.categoryReducer.Categories);
+
+    useEffect(() => {
+        getCategoryList();
+    }, []);
+
+    const getCategoryList = async () => {
+        let resp = await dispatch(getCategoiryAPI());
+    };
+
+    // const updateCategoryList = async () => {
+    //     let resp = await dispatch(updateCategoiryAPI());
+    // };
+    // const deleteCategoryList = async () => {
+    //     let resp = await dispatch(deleteCategoiryAPI());
+    // };
 
     const toggleCategoryForm = () => {
         setShowCategoryForm(!showCategoryForm);
-        setEditingCategory(null);
+        setSelectedId(null);
     };
 
-    const onFinish = (values) => {
-        console.log("Success:", values);
-        if (editingCategory !== null) {
-            const updatedCategories = categories.map((cat, index) => (index === editingCategory ? values : cat));
+    const onFinish = async (values) => {
+        console.log("values:", values);
+        if (selectedId !== null) {
+            const updatedCategories = categories.map((cat, index) => (index === selectedId ? values : cat));
             setCategories(updatedCategories);
         } else {
-            setCategories([...categories, values]);
+            let resp = await dispatch(addCategoiryAPI(values));
         }
         toggleCategoryForm();
     };
 
-    const handleEdit = (index) => {
-        console.log("Edit:", index);
-        setEditingCategory(index); // Set the index of the category being edited
-        setShowCategoryForm(true); // Show the category form
+    const handleEdit = async (id, values) => {
+        console.log("values:", values);
+        setSelectedId(id);
+        setShowCategoryForm(true);
+        let resp = await dispatch(updateCategoiryAPI(values));
     };
 
-    const handleDelete = (index) => {
-        console.log("Delete:", index);
-        setCategories(categories.filter((_, idx) => idx !== index));
+    const handleDelete = async (values) => {
+        console.log("Delete:", values);
+        setCategories(categories.filter((_, idx) => idx !== values));
+        let resp = await dispatch(deleteCategoiryAPI(values));
     };
 
     const uploadProps = {
@@ -80,10 +102,10 @@ const App = () => {
             key: "action",
             render: (text, record, index) => (
                 <Space size="middle">
-                    <Button icon={<EditOutlined />} onClick={() => handleEdit(index)}>
+                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record.id)}>
                         Edit
                     </Button>
-                    <Button icon={<DeleteOutlined />} onClick={() => handleDelete(index)}>
+                    <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)}>
                         Delete
                     </Button>
                 </Space>
@@ -104,7 +126,7 @@ const App = () => {
 
             <Table columns={columns} dataSource={categories} />
 
-            <Modal title={editingCategory !== null ? "Edit Category" : "Add Category"} visible={showCategoryForm} onCancel={toggleCategoryForm} footer={null}>
+            <Modal title={selectedId !== null ? "Edit Category" : "Add Category"} visible={showCategoryForm} onCancel={toggleCategoryForm} footer={null}>
                 <Form
                     name="basic"
                     labelCol={{ span: 8 }}
@@ -117,7 +139,7 @@ const App = () => {
                     <Form.Item
                         label="Title"
                         name="title"
-                        initialValue={editingCategory !== null ? categories[editingCategory].title : ""}
+                        initialValue={selectedId !== null ? categories[selectedId].title : ""}
                         rules={[{ required: true, message: "Please input the title!" }]}
                     >
                         <Input />
@@ -126,7 +148,7 @@ const App = () => {
                     <Form.Item
                         label="Description"
                         name="description"
-                        initialValue={editingCategory !== null ? categories[editingCategory].description : ""}
+                        initialValue={selectedId !== null ? categories[selectedId].description : ""}
                         rules={[{ required: true, message: "Please input the description!" }]}
                     >
                         <Input.TextArea />
@@ -134,7 +156,7 @@ const App = () => {
 
                     <Form.Item
                         label="Image"
-                        name="image"
+                        name="file"
                         valuePropName="fileList"
                         getValueFromEvent={(e) => {
                             if (Array.isArray(e)) {
@@ -160,4 +182,4 @@ const App = () => {
     );
 };
 
-export default App;
+export default CategoryPage;
