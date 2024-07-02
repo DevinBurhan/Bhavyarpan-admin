@@ -4,9 +4,10 @@ const actions = {
     CATEGORY_UPDATE: "CATEGORY_UPDATE",
     CATEGORY_DELETE: "CATEGORY_DELETE",
 
-    getCategory: () => {
+    getCategory: (data) => {
         return {
             type: actions.CATEGORY_GET,
+            data,
         };
     },
     addCategory: (data) => {

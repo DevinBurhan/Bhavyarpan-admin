@@ -48,6 +48,21 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu, events }) => {
                     Category
                 </NavLink>
             </Menu.Item>
+            <Menu.Item icon={!topMenu && <FeatherIcon icon="activity" />} key="subcategory">
+                <NavLink onClick={toggleCollapsed} to={`/subcategory`}>
+                    SubCategory
+                </NavLink>
+            </Menu.Item>
+            <Menu.Item icon={!topMenu && <FeatherIcon icon="activity" />} key="productMaster">
+                <NavLink onClick={toggleCollapsed} to={`/productMaster`}>
+                    Product Master
+                </NavLink>
+            </Menu.Item>
+            <Menu.Item icon={!topMenu && <FeatherIcon icon="activity" />} key="banner">
+                <NavLink onClick={toggleCollapsed} to={`/banner`}>
+                    Banner
+                </NavLink>
+            </Menu.Item>
         </Menu>
     );
 };

@@ -1,70 +1,65 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Space, Table, Upload, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCategoiryAPI, deleteCategoiryAPI, getCategoiryAPI, updateCategoiryAPI } from "../../redux/categoryredux/actionCreator";
+import { Button, Form, Input, Modal, Space, Table, Upload, message } from "antd";
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons";
+import { addSubcategoryAPI, deleteSubcategoryAPI, getSubcategoriesAPI, updateSubcategoryAPI } from "../../redux/subcategoryredux/actionCreator";
 
-const CategoryPage = () => {
+const SubcategoryPage = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
     const [modalOpen, setIsModalOpen] = useState(false);
-    const [categories, setCategories] = useState([]);
+    const [subcategories, setSubcategories] = useState([]);
     const [selectedId, setSelectedId] = useState(null);
-    const data = useSelector((state) => state.categoryReducer.Categories);
+    const data = useSelector((state) => state.subcategoryReducer.Subcategories);
 
     useEffect(() => {
-        //by default call get API on every render
-        getCategoryList();
+        // Call get API on component mount
+        getSubcategoryList();
     }, []);
 
-    const getCategoryList = async () => {
-        let resp = await dispatch(getCategoiryAPI());
+    const getSubcategoryList = async () => {
+        await dispatch(getSubcategoriesAPI());
     };
 
     const onFinish = async (values) => {
         if (selectedId !== null) {
-            //Edit function will call here because we have value of ID set in handleEdit Sucntion
-            let resp = await dispatch(updateCategoiryAPI(selectedId, values));
-            //if resp is true then set all variable to default state and call get API to get the latest data
+            // Update existing subcategory
+            let resp = await dispatch(updateSubcategoryAPI(selectedId, values));
             if (resp) {
                 form.resetFields();
-                setSelectedId();
+                setSelectedId(null);
                 setIsModalOpen(false);
-                getCategoryList();
+                getSubcategoryList();
             }
         } else {
-            //Add category API will call here because selectedId is empty
-            let resp = await dispatch(addCategoiryAPI(values));
-            //if resp is true then set all variable to default state and call get API to get the latest data
+            // Add new subcategory
+            let resp = await dispatch(addSubcategoryAPI(values));
             if (resp) {
                 form.resetFields();
-                setSelectedId();
+                setSelectedId(null);
                 setIsModalOpen(false);
-                getCategoryList();
+                getSubcategoryList();
             }
         }
     };
 
     const handleEdit = async (record) => {
-        console.log("record", record._id);
         setSelectedId(record._id);
-        // open modal and setSelectedvalue
-        // setSelectedId(record._id);
         setIsModalOpen(true);
-        form.setFieldsValue(record); //set Antd Form Value on EDIT
+        form.setFieldsValue(record);
     };
 
     const handleDelete = async (record) => {
-        console.log("Record", record._id);
-        // delwete record with this id directly
-        let resp = await dispatch(deleteCategoiryAPI(record._id));
+        let resp = await dispatch(deleteSubcategoryAPI(record._id));
         if (resp) {
-            getCategoryList();
+            getSubcategoryList();
         }
     };
+
     const handleCancel = () => {
         setSelectedId(null);
         form.resetFields();
+        setIsModalOpen(false);
     };
 
     const uploadProps = {
@@ -103,22 +98,15 @@ const CategoryPage = () => {
             key: "description",
         },
         {
-            title: "Image",
-            dataIndex: "image",
-            key: "image",
-            render: (text) => <img src={text} alt="category" style={{ width: 50 }} />,
-        },
-        {
             title: "Action",
             key: "action",
-            render: (record, index) => (
+            render: (record) => (
                 <Space size="middle">
                     <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
                         Edit
                     </Button>
                     <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
                         Delete
-                        {/* Are you sure want to delete this category */}
                     </Button>
                 </Space>
             ),
@@ -127,31 +115,36 @@ const CategoryPage = () => {
 
     return (
         <div style={{ padding: 24 }}>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "right",
-                    alignItems: "right",
-                }}
-            >
+            <div style={{ display: "flex", justifyContent: "right", alignItems: "right" }}>
                 <Button type="" icon={<SearchOutlined />} style={{ marginRight: 10 }}>
                     Search
                 </Button>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
-                    Add Category
+                    Add Subcategory
                 </Button>
             </div>
 
-            <Table columns={columns} dataSource={data?.data} />
+            <Table columns={columns} dataSource={data} />
 
-            <Modal title={selectedId !== null ? "Edit Category" : "Add Category"} open={modalOpen} onCancel={handleCancel} onOk={form.submit} okText="Submit">
+            <Modal
+                title={selectedId !== null ? "Edit Subcategory" : "Add Subcategory"}
+                visible={modalOpen}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>
+                        Cancel
+                    </Button>,
+                    <Button key="submit" type="primary" onClick={() => form.submit()}>
+                        Submit
+                    </Button>,
+                ]}
+            >
                 <Form
                     form={form}
                     name="basic"
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     style={{ maxWidth: 600 }}
-                    initialValues={{ remember: true }}
                     onFinish={onFinish}
                     autoComplete="off"
                 >
@@ -162,33 +155,10 @@ const CategoryPage = () => {
                     <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
                         <Input.TextArea />
                     </Form.Item>
-
-                    <Form.Item
-                        label="Image"
-                        name="file"
-                        valuePropName="fileList"
-                        getValueFromEvent={(e) => {
-                            if (Array.isArray(e)) {
-                                return e;
-                            }
-                            return e && e.fileList;
-                        }}
-                        rules={[{ required: true, message: "Please upload an image!" }]}
-                    >
-                        <Upload {...uploadProps} listType="picture">
-                            <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                        </Upload>
-                    </Form.Item>
-
-                    {/* <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item> */}
                 </Form>
             </Modal>
         </div>
     );
 };
 
-export default CategoryPage;
+export default SubcategoryPage;
