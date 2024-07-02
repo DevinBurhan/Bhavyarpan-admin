@@ -4,16 +4,16 @@
  * could be done from here without refactoring on multiple places throughout the app
  */
 const API = {
-    auth: {
-        login: "auth/login",
-        signUp: "/signup",
-    },
-    category: {
-        add: "category/create",
-        update: "category/+id",
-        get: "category/list",
-        delete: "category/",
-    },
+  auth: {
+    login: "auth/login",
+    signUp: "/signup",
+  },
+  category: {
+    add: "category/create",
+    update: "category/",
+    get: "category/list",
+    delete: "category/",
+  },
 };
 
 export { API };
