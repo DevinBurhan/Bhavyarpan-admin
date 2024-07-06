@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input, Modal, Space, Table, Upload, message } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Space, Table, Upload, message } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons";
 import { addSubcategoryAPI, deleteSubcategoryAPI, getSubcategoriesAPI, updateSubcategoryAPI } from "../../redux/subcategoryredux/actionCreator";
 
@@ -114,50 +114,61 @@ const SubcategoryPage = () => {
     ];
 
     return (
-        <div style={{ padding: 24 }}>
-            <div style={{ display: "flex", justifyContent: "right", alignItems: "right" }}>
-                <Button type="" icon={<SearchOutlined />} style={{ marginRight: 10 }}>
-                    Search
-                </Button>
-                <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
-                    Add Subcategory
-                </Button>
-            </div>
+        <>
+            <div className="pageHeading">
+                <Row gutter={20} justify={"space-between"}>
+                    <Col>
+                        <h2>Sub Categroy</h2>
+                    </Col>
+                    <Col>
+                        <Row gutter={[20, 20]}>
+                            <Col>
+                                <Input type="search" placeholder={"Search subcategroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} />
+                            </Col>
+                            <Col>
+                                <Button style={{ height: "47.56px" }} type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
+                                    Add Subcategory
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
 
-            <Table columns={columns} dataSource={data} />
+                <Table columns={columns} dataSource={data} />
 
-            <Modal
-                title={selectedId !== null ? "Edit Subcategory" : "Add Subcategory"}
-                open={modalOpen}
-                onCancel={handleCancel}
-                footer={[
-                    <Button key="cancel" onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button key="submit" type="primary" onClick={() => form.submit()}>
-                        Submit
-                    </Button>,
-                ]}
-            >
-                <Form
-                    form={form}
-                    name="basic"
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
-                    style={{ maxWidth: 600 }}
-                    onFinish={onFinish}
-                    autoComplete="off"
+                <Modal
+                    title={selectedId !== null ? "Edit Subcategory" : "Add Subcategory"}
+                    open={modalOpen}
+                    onCancel={handleCancel}
+                    footer={[
+                        <Button key="cancel" onClick={handleCancel}>
+                            Cancel
+                        </Button>,
+                        <Button key="submit" type="primary" onClick={() => form.submit()}>
+                            Submit
+                        </Button>,
+                    ]}
                 >
-                    <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input the title!" }]}>
-                        <Input />
-                    </Form.Item>
+                    <Form
+                        form={form}
+                        name="basic"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        style={{ maxWidth: 600 }}
+                        onFinish={onFinish}
+                        autoComplete="off"
+                    >
+                        <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input the title!" }]}>
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-                        <Input.TextArea />
-                    </Form.Item>
-                </Form>
-            </Modal>
-        </div>
+                        <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
+                            <Input.TextArea />
+                        </Form.Item>
+                    </Form>
+                </Modal>
+            </div>
+        </>
     );
 };
 

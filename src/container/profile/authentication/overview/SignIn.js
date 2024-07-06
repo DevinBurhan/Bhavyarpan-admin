@@ -14,7 +14,10 @@ const SignIn = () => {
     const [form] = Form.useForm();
 
     const handleSubmit = async (value) => {
-        let resp = await dispatch(login(value));
+        const form_data = new FormData();
+        form_data.append("email", value.email);
+        form_data.append("password", value.password);
+        let resp = await dispatch(login(form_data));
         if (resp) {
             history.push("/admin");
         }

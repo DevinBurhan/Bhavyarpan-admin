@@ -1,5 +1,5 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Space, Table, Upload, message } from "antd";
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Col, Form, Input, Modal, Row, Space, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addCategoiryAPI, deleteCategoiryAPI, getCategoiryAPI, updateCategoiryAPI } from "../../redux/categoryredux/actionCreator";
@@ -8,83 +8,99 @@ const CategoryPage = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
     const [modalOpen, setIsModalOpen] = useState(false);
-    const [categories, setCategories] = useState([]);
+    const [isLoading, setIsLoading] = useState(false); //loadder
     const [selectedId, setSelectedId] = useState(null);
+    const [mediaFile, setMediaFile] = useState(); //store file
+    const [mediaPreview, setMediaPreview] = useState(); //store preview img
+
     const data = useSelector((state) => state.categoryReducer.Categories);
 
     useEffect(() => {
-        //by default call get API on every render
         getCategoryList();
     }, []);
 
     const getCategoryList = async () => {
-        let resp = await dispatch(getCategoiryAPI());
+        setIsLoading(true);
+        await dispatch(getCategoiryAPI());
+        setIsLoading(false);
     };
 
     const onFinish = async (values) => {
+        setIsLoading(true);
+        const form_data = new FormData();
+
+        form_data.append("title", values.title);
+        form_data.append("description", values.description);
+
+        let resp;
+
         if (selectedId !== null) {
-            //Edit function will call here because we have value of ID set in handleEdit Sucntion
-            let resp = await dispatch(updateCategoiryAPI(selectedId, values));
-            //if resp is true then set all variable to default state and call get API to get the latest data
-            if (resp) {
-                form.resetFields();
-                setSelectedId();
-                setIsModalOpen(false);
-                getCategoryList();
+            //update logic
+            delete values.image;
+            if (mediaFile) {
+                form_data.append("image", mediaFile);
             }
+
+            for (const pair of form_data.entries()) {
+                console.log("pair : ", pair);
+            }
+            resp = await dispatch(updateCategoiryAPI(selectedId, form_data)); //update api
         } else {
-            //Add category API will call here because selectedId is empty
-            values.image = values.file[0];
-            delete values.file;
-            let resp = await dispatch(addCategoiryAPI(values));
-            //if resp is true then set all variable to default state and call get API to get the latest data
-            if (resp) {
-                form.resetFields();
-                setSelectedId();
-                setIsModalOpen(false);
-                getCategoryList();
+            //add logic
+            if (!mediaFile) {
+                message.error("Please add category image");
+                return false;
             }
+            delete values.image;
+            form_data.append("image", mediaFile);
+            resp = await dispatch(addCategoiryAPI(form_data)); //add api
+        }
+        //coo
+        if (resp) {
+            form.resetFields();
+            setSelectedId();
+            setIsModalOpen(false);
+            setMediaPreview();
+            setMediaFile();
+            getCategoryList();
+        } else {
+            getCategoryList();
         }
     };
 
     const handleEdit = async (record) => {
         console.log("record", record._id);
+        setMediaPreview(record.image);
         setSelectedId(record._id);
-        // open modal and setSelectedvalue
-        // setSelectedId(record._id);
         setIsModalOpen(true);
         form.setFieldsValue(record); //set Antd Form Value on EDIT
     };
 
     const handleDelete = async (record) => {
-        console.log("Record", record._id);
-        // delwete record with this id directly
-        let resp = await dispatch(deleteCategoiryAPI(record._id));
-        if (resp) {
-            getCategoryList();
-        }
+        Modal.confirm({
+            title: "Are you sure you want to delete this category",
+            onOk: async () => {
+                if (record._id) {
+                    let resp = await dispatch(deleteCategoiryAPI(record._id));
+                    if (resp) {
+                        getCategoryList();
+                    }
+                }
+            },
+        });
     };
     const handleCancel = () => {
+        setIsModalOpen(false);
+        setMediaFile();
+        setMediaPreview();
         setSelectedId(null);
         form.resetFields();
     };
 
-    const uploadProps = {
-        name: "file",
-        action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
-        headers: {
-            authorization: "authorization-text",
-        },
-        onChange(info) {
-            if (info.file.status !== "uploading") {
-                console.log(info.file, info.fileList);
-            }
-            if (info.file.status === "done") {
-                message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === "error") {
-                message.error(`${info.file.name} file upload failed.`);
-            }
-        },
+    const handleChangeMedia = (selectedFile) => {
+        if (!selectedFile) return;
+        setMediaPreview(URL.createObjectURL(selectedFile));
+        setMediaFile(selectedFile);
     };
 
     const columns = [
@@ -120,7 +136,6 @@ const CategoryPage = () => {
                     </Button>
                     <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
                         Delete
-                        {/* Are you sure want to delete this category */}
                     </Button>
                 </Space>
             ),
@@ -128,62 +143,73 @@ const CategoryPage = () => {
     ];
 
     return (
-        <div style={{ padding: 24 }}>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "right",
-                    alignItems: "right",
-                }}
-            >
-                <Button type="" icon={<SearchOutlined />} style={{ marginRight: 10 }}>
-                    Search
-                </Button>
-                <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
-                    Add Category
-                </Button>
-            </div>
+        <>
+            <div className="pageHeading">
+                <Row gutter={20} justify={"space-between"}>
+                    <Col>
+                        <h2>Category</h2>
+                    </Col>
+                    <Col>
+                        <Row gutter={[20, 20]}>
+                            <Col>
+                                <Input type="search" placeholder={"Search categroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} />
+                            </Col>
+                            <Col>
+                                <Button style={{ height: "47.56px" }} type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
+                                    Add Category
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
 
-            <Table columns={columns} dataSource={data?.data} />
+                <Table columns={columns} dataSource={data?.data} loading={isLoading} />
 
-            <Modal title={selectedId !== null ? "Edit Category" : "Add Category"} open={modalOpen} onCancel={handleCancel} onOk={form.submit} okText="Submit">
-                <Form
-                    form={form}
-                    name="basic"
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
-                    style={{ maxWidth: 600 }}
-                    initialValues={{ remember: true }}
-                    onFinish={onFinish}
-                    autoComplete="off"
+                <Modal
+                    title={selectedId !== null ? "Edit Category" : "Add Category"}
+                    open={modalOpen}
+                    onCancel={handleCancel}
+                    onOk={form.submit}
+                    okText="Submit"
+                    confirmLoading={isLoading}
                 >
-                    <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input the title!" }]}>
-                        <Input />
-                    </Form.Item>
+                    <Form form={form} onFinish={onFinish} autoComplete="off" layout="vertical">
+                        <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input the title!" }]}>
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-                        <Input.TextArea />
-                    </Form.Item>
+                        <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
+                            <Input.TextArea />
+                        </Form.Item>
 
-                    <Form.Item
-                        label="Image"
-                        name="file"
-                        valuePropName="fileList"
-                        getValueFromEvent={(e) => {
-                            if (Array.isArray(e)) {
-                                return e;
-                            }
-                            return e && e.fileList;
-                        }}
-                        rules={[{ required: true, message: "Please upload an image!" }]}
-                    >
-                        <Upload {...uploadProps} listType="picture">
-                            <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                        </Upload>
-                    </Form.Item>
-                </Form>
-            </Modal>
-        </div>
+                        <Form.Item label="Image" name="image">
+                            <Input
+                                type="file"
+                                title={"Add Image"}
+                                onChange={(event) => handleChangeMedia(event.target.files[0])}
+                                accept="image/jpeg,image/png,image/svg"
+                                aria-label="Upload File"
+                            />
+                            {mediaPreview && (
+                                <img
+                                    alt="img"
+                                    src={mediaPreview}
+                                    width={100}
+                                    height={100}
+                                    style={{
+                                        float: "right",
+                                        display: "flex",
+                                        objectFit: "contain",
+                                        marginTop: "10px",
+                                        border: "1px solid black",
+                                    }}
+                                />
+                            )}
+                        </Form.Item>
+                    </Form>
+                </Modal>
+            </div>
+        </>
     );
 };
 

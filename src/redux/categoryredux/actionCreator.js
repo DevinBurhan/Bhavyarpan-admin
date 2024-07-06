@@ -13,7 +13,7 @@ export const getCategoiryAPI = () => {
             });
             if (resp.data.message) {
                 dispatch(getCategory(resp.data));
-                message.success(resp.data.message);
+
                 return true;
             } else {
                 return false;
