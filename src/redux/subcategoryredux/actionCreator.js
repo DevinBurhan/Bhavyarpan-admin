@@ -29,10 +29,10 @@ export const addSubcategoryAPI = (payload) => {
         try {
             console.log("resp", API.subCategory.add);
             const resp = await DataService.post(API.subCategory.add, payload);
-            console.log("resp", resp);
+            // console.log("resp", resp);
             if (resp.data.status) {
                 dispatch(addsubCategory(resp.data));
-                // message.success(resp.data.message);
+                message.success(resp.data.message);
                 return true;
             } else {
                 return false;

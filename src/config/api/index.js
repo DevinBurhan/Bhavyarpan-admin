@@ -20,7 +20,18 @@ const API = {
         get: "subCategory/list",
         delete: "subCategory",
     },
-    productMaster: {},
+    productMaster: {
+        get: "productMaster/list",
+        add: "productMaster/create",
+        update: "productMaster",
+        delete: "productMaster",
+    },
+    banner: {
+        get: "banner/list",
+        add: "banner/create-banner",
+        update: "banner",
+        delete: "banner",
+    },
 };
 
 export { API };

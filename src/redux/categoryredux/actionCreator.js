@@ -8,8 +8,9 @@ const { getCategory, addCategory, categoryErr, updateCategory, deleteCategory } 
 export const getCategoiryAPI = () => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.get(API.category.get);
-            // console.log("action creator resp", resp);
+            const resp = await DataService.get(API.category.get, {
+                pagination: true, // Include pagination parameter
+            });
             if (resp.data.message) {
                 dispatch(getCategory(resp.data));
                 message.success(resp.data.message);

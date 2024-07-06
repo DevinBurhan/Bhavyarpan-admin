@@ -34,6 +34,8 @@ const CategoryPage = () => {
             }
         } else {
             //Add category API will call here because selectedId is empty
+            values.image = values.file[0];
+            delete values.file;
             let resp = await dispatch(addCategoiryAPI(values));
             //if resp is true then set all variable to default state and call get API to get the latest data
             if (resp) {
@@ -179,12 +181,6 @@ const CategoryPage = () => {
                             <Button icon={<UploadOutlined />}>Click to Upload</Button>
                         </Upload>
                     </Form.Item>
-
-                    {/* <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item> */}
                 </Form>
             </Modal>
         </div>

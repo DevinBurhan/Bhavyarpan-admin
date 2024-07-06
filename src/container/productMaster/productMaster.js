@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Table, Space, Modal, Form, Input } from "antd";
 import { SearchOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
+import { addCategoiryAPI, deleteCategoiryAPI, getproductMasterAPI, updateCategoiryAPI } from "../../redux/productMasterredux/actionCreator";
 
 const ProductMasterPage = () => {
     const dispatch = useDispatch();

@@ -128,7 +128,7 @@ const SubcategoryPage = () => {
 
             <Modal
                 title={selectedId !== null ? "Edit Subcategory" : "Add Subcategory"}
-                visible={modalOpen}
+                open={modalOpen}
                 onCancel={handleCancel}
                 footer={[
                     <Button key="cancel" onClick={handleCancel}>
