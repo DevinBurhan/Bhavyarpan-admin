@@ -4,9 +4,10 @@ const actions = {
     BANNER_UPDATE: "BANNER_UPDATE",
     BANNER_DELETE: "PRODUCTMASTER_DELETE",
 
-    getbanner: () => {
+    getbanner: (data) => {
         return {
             type: actions.BANNER_GET,
+            data,
         };
     },
     addbanner: (data) => {
