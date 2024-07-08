@@ -2,6 +2,7 @@ import { message } from "antd";
 import { API } from "../../config/api";
 import { DataService } from "../../config/dataService/dataService";
 import actions from "./action";
+
 const { getsubCategory, addsubCategory, subCategoryErr, updatesubCategory, deletesubCategory } = actions;
 
 export const getSubcategoriesAPI = () => {
@@ -23,7 +24,6 @@ export const getSubcategoriesAPI = () => {
         }
     };
 };
-
 export const addSubcategoryAPI = (payload) => {
     return async (dispatch) => {
         try {
@@ -71,8 +71,7 @@ export const deleteSubcategoryAPI = (subCategoryId) => {
             const resp = await DataService.delete(API.subCategory.delete + subCategoryId);
             console.log("resp", resp);
             if (resp.data.status) {
-                dispatch(deletesubCategory(resp.data));
-
+                // dispatch(deleteCategory(resp.data));
                 message.success(resp.data.message);
                 return true;
             } else {
