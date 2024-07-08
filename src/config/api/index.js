@@ -28,9 +28,10 @@ const API = {
     },
     banner: {
         get: "banner/list",
+        getDetail: "banner/",
         add: "banner/create-banner",
-        update: "banner",
-        delete: "banner",
+        update: "banner/",
+        delete: "banner/",
     },
 };
 

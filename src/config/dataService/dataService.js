@@ -12,6 +12,7 @@ const client = axios.create({
     headers: {
         Authorization: `Bearer ${getItem("access_token")}`,
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        // "Content-Type": "application/json",
     },
 });
 

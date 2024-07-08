@@ -8,6 +8,8 @@ const initialState = {
 
 const bannerReducer = (state = initialState, action) => {
     const { type, data } = action;
+    console.log("file: reducers.js:11  bannerReducer  data", data);
+    console.log("file: reducers.js:11  bannerReducer  type", type);
     switch (type) {
         case actions.BANNER_GET:
             return {

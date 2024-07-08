@@ -10,6 +10,8 @@ const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutEr
 const login = (payload) => {
     return async (dispatch) => {
         try {
+            console.log("payloadpayload", payload);
+
             const resp = await DataService.post(API.auth.login, payload);
 
             console.log("resp", resp);
