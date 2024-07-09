@@ -11,7 +11,7 @@ const client = axios.create({
     baseURL: API_ENDPOINT,
     headers: {
         Authorization: `Bearer ${getItem("access_token")}`,
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        // "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         // "Content-Type": "application/json",
     },
 });
@@ -33,7 +33,7 @@ class DataService {
             method: "POST",
             url: path,
             data,
-            headers: { ...authHeader(), ...optionalHeader },
+            headers: { ...optionalHeader, ...authHeader() },
         });
     }
 

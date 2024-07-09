@@ -12,7 +12,11 @@ const login = (payload) => {
         try {
             console.log("payloadpayload", payload);
 
-            const resp = await DataService.post(API.auth.login, payload);
+            const resp = await DataService.post(API.auth.login, payload, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
             console.log("resp", resp);
             if (resp?.data?.status) {
