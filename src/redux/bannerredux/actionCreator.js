@@ -1,24 +1,25 @@
-import { Pagination, message } from "antd";
+import { message } from "antd";
 import { API } from "../../config/api";
 import { DataService } from "../../config/dataService/dataService";
 import actions from "./action";
 
-const { getbanner, addbanner, updatebanner } = actions;
+const { getBanner, addBanner, bannerErr, updateBanner, deleteBanner } = actions;
 
 export const getBannerAPI = () => {
     return async (dispatch) => {
         try {
             const resp = await DataService.get(API.banner.get);
-            console.log("respresp", resp.data);
+            // console.log("action creator resp", resp);
             if (resp.data.status) {
-                console.log("respresp", resp.data);
-                dispatch(getbanner(resp.data));
+                dispatch(getBanner(resp.data));
+                message.success(resp.data.message);
                 return true;
             } else {
                 return false;
             }
         } catch (err) {
-            message.error("Failed to fetch categories");
+            dispatch(bannerErr(err));
+            message.error("Failed to fetch banners");
             return false;
         }
     };
@@ -27,28 +28,31 @@ export const getBannerAPI = () => {
 export const addBannerAPI = (payload) => {
     return async (dispatch) => {
         try {
+            // console.log("resp", API.banner.add);
             const resp = await DataService.post(API.banner.add, payload);
+            // console.log("resp", resp);
             if (resp.data.status) {
-                dispatch(addbanner(resp.data));
+                dispatch(addBanner(resp.data));
                 message.success(resp.data.message);
                 return true;
             } else {
                 return false;
             }
         } catch (err) {
-            message.error("Failed to add categories");
+            dispatch(bannerErr(err));
+            message.error("Failed to add banners");
             return false;
         }
     };
 };
 
-export const updateBannerAPI = (categoryId, payload) => {
+export const updateBannerAPI = (bannerId, payload) => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.put(API.banner.update + categoryId, payload);
+            const resp = await DataService.put(API.banner.update + bannerId, payload);
 
             if (resp.data.status) {
-                dispatch(updatebanner(resp.data));
+                dispatch(updateBanner(resp.data));
                 message.success(resp.data.message);
                 return true;
             } else {
@@ -61,10 +65,11 @@ export const updateBannerAPI = (categoryId, payload) => {
     };
 };
 
-export const deleteBannerAPI = (Id) => {
+export const deleteBannerAPI = (bannerId) => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.delete(API.banner.delete + Id);
+            console.log("skjdfgjsdgbfhjsfdgjhfsd", bannerId);
+            const resp = await DataService.delete(API.banner.delete + bannerId);
             console.log("resp", resp);
             if (resp.data.status) {
                 message.success(resp.data.message);
@@ -73,7 +78,8 @@ export const deleteBannerAPI = (Id) => {
                 return false;
             }
         } catch (err) {
-            message.error("Failed to delete categories");
+            dispatch(bannerErr(err));
+            message.error("Failed to delete banners");
             return false;
         }
     };

@@ -2,26 +2,27 @@ const actions = {
     SUBCATEGORY_GET: "SUBCATEGORY_GET",
     SUBCATEGORY_ADD: "SUBCATEGORY_ADD",
     SUBCATEGORY_UPDATE: "SUBCATEGORY_UPDATE",
-    SUBCATEGORY_DELETE: "SUBCATEGORY_DELETE",
+    SUBCATEGORY_DELETE: "PRODUCTMASTER_DELETE",
 
-    getsubCategory: () => {
+    getSubcategory: (data) => {
         return {
             type: actions.SUBCATEGORY_GET,
+            data,
         };
     },
-    addsubCategory: (data) => {
+    addSubcategory: (data) => {
         return {
             type: actions.SUBCATEGORY_ADD,
             data,
         };
     },
-    updatesubCategory: (data) => {
+    updateSubcategory: (data) => {
         return {
             type: actions.SUBCATEGORY_UPDATE,
             data,
         };
     },
-    deletesubCategory: (data) => {
+    deleteSubcategory: (data) => {
         return {
             type: actions.SUBCATEGORY_DELETE,
             data,

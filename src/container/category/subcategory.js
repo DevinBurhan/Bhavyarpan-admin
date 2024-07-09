@@ -1,99 +1,100 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Input, Modal, Row, Space, Table, Select, message } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Select, Space, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addSubcategoryAPI, deleteSubcategoryAPI, getSubcategoriesAPI, updateSubcategoryAPI } from "../../redux/subcategoryredux/actionCreator";
+import { getCategoiryAPI } from "../../redux/categoryredux/actionCreator";
 
-const { Option } = Select;
-
-const SubcategoryPage = () => {
-    const dispatch = useDispatch();
+const SubCategoryPage = () => {
     const [form] = Form.useForm();
-    const [modalOpen, setIsModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
+    const [dataSource, setDataSource] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedsubCategory, setSelectedsubCategory] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); //loadder
     const [selectedId, setSelectedId] = useState(null);
-    const [mediaFile, setMediaFile] = useState();
-    const [mediaPreview, setMediaPreview] = useState();
 
-    const data = useSelector((state) => state.subcategoryReducer.Subcategories);
+    const data = useSelector((state) => state?.subcategoryReducer?.subCategory);
+    const categoryList = useSelector((state) => state?.categoryReducer?.Categories);
+    console.log("file: SubCategory.js:22  SubCategoryPage  categoryList", categoryList);
 
     useEffect(() => {
-        getsubCategoryList();
+        getApi();
+        getCategoryList();
     }, []);
 
-    const getsubCategoryList = async () => {
+    const getApi = async () => {
         setIsLoading(true);
         await dispatch(getSubcategoriesAPI());
         setIsLoading(false);
     };
-
-    const onFinish = async (values) => {
+    const getCategoryList = async () => {
         setIsLoading(true);
-        const form_data = new FormData();
-
-        form_data.append("title", values.title);
-        form_data.append("description", values.description);
-        form_data.append("categoryId", values.categoryId);
-        let resp;
-
-        if (selectedId !== null) {
-            resp = await dispatch(updateSubcategoryAPI(selectedId, form_data));
-        } else {
-            resp = await dispatch(addSubcategoryAPI(form_data));
-        }
-
-        if (resp) {
-            form.resetFields();
-            setSelectedId(null);
-            setIsModalOpen(false);
-            setMediaPreview(undefined);
-            setMediaFile(undefined);
-            getsubCategoryList();
-        } else {
-            getsubCategoryList();
-        }
+        await dispatch(getCategoiryAPI());
         setIsLoading(false);
     };
 
-    const handleEdit = async (record) => {
-        setSelectedId(record._id);
+    const handleEdit = (record) => {
+        setSelectedId(record?._id);
+        form.setFieldsValue(record); //set Antd Form Value on EDIT
         setIsModalOpen(true);
-        form.setFieldsValue(record);
     };
 
-    const handleDelete = async (record) => {
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        setSelectedId(null);
+        form.resetFields();
+    };
+
+    const handleDelete = (record) => {
         Modal.confirm({
-            title: "Are you sure you want to delete this subcategory?",
+            title: "Are you sure you want to delete this category",
             onOk: async () => {
                 if (record._id) {
                     let resp = await dispatch(deleteSubcategoryAPI(record._id));
                     if (resp) {
-                        getsubCategoryList();
+                        getApi();
                     }
                 }
             },
         });
     };
+    const handleFinish = async (values) => {
+        setIsLoading(true);
+        const form_data = new FormData();
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
-        setMediaFile(undefined);
-        setMediaPreview(undefined);
-        setSelectedId(null);
-        form.resetFields();
-    };
+        form_data.append("title", values.title);
+        form_data.append("description", values.description);
+        form_data.append("category", values.category);
 
-    const handleChangeMedia = (selectedFile) => {
-        if (!selectedFile) return;
-        setMediaPreview(URL.createObjectURL(selectedFile));
-        setMediaFile(selectedFile);
+        let resp;
+
+        if (selectedId !== null) {
+            //update logic
+
+            for (const pair of form_data.entries()) {
+                console.log("pair : ", pair);
+            }
+            resp = await dispatch(updateSubcategoryAPI(selectedId, form_data)); //update api
+        } else {
+            //add logic
+
+            resp = await dispatch(addSubcategoryAPI(form_data)); //add api
+        }
+        console.log("safdsfgf");
+        if (resp) {
+            handleCancel();
+            getApi();
+        } else {
+            getApi();
+        }
     };
 
     const columns = [
         {
             title: "Sr. No",
-            dataIndex: "serial",
-            key: "serial",
+            dataIndex: "key",
+            key: "key",
             render: (text, record, index) => index + 1,
         },
         {
@@ -106,30 +107,16 @@ const SubcategoryPage = () => {
             dataIndex: "description",
             key: "description",
         },
-        {
-            title: "Category",
-            dataIndex: "categoryId",
-            key: "categoryId",
-            render: (categoryId) => {
-                return (
-                    <Select defaultValue={categoryId} style={{ width: 120 }}>
-                        {/* Replace with actual categories fetched from API */}
-                        <Option value="1">Category 1</Option>
-                        <Option value="2">Category 2</Option>
-                        <Option value="3">Category 3</Option>
-                    </Select>
-                );
-            },
-        },
+
         {
             title: "Action",
             key: "action",
-            render: (record) => (
+            render: (text, record) => (
                 <Space size="middle">
-                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
+                    <Button type="" icon={<EditOutlined />} size="small" onClick={() => handleEdit(record)}>
                         Edit
                     </Button>
-                    <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
+                    <Button type="" icon={<DeleteOutlined />} size="small" onClick={() => handleDelete(record)}>
                         Delete
                     </Button>
                 </Space>
@@ -138,63 +125,64 @@ const SubcategoryPage = () => {
     ];
 
     return (
-        <>
-            <div className="pageHeading">
-                <Row gutter={20} justify={"space-between"}>
-                    <Col>
-                        <h2>SubCategory</h2>
-                    </Col>
-                    <Col>
-                        <Row gutter={[20, 20]}>
-                            <Col>
-                                <Input type="search" placeholder="Search subcategory" style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} />
-                            </Col>
-                            <Col>
-                                <Button style={{ height: "47.56px" }} type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
-                                    Add subCategory
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
+        <div className="pageHeading">
+            <Row gutter={20} justify={"space-between"}>
+                <Col>
+                    <h2>SubCategory</h2>
+                </Col>
+                <Col>
+                    <Row gutter={[20, 20]}>
+                        <Col>
+                            <Input type="search" placeholder={"Search categroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} />
+                        </Col>
+                        <Col>
+                            <Button style={{ height: "47.56px" }} type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
+                                Add Subcategory
+                            </Button>
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
 
-                <Table columns={columns} dataSource={data?.data} loading={isLoading} />
+            <Table dataSource={data && data.data ? data.data : []} columns={columns} loading={isLoading} />
 
-                <Modal
-                    title={selectedId !== null ? "Edit subCategory" : "Add subCategory"}
-                    visible={modalOpen}
-                    onCancel={handleCancel}
-                    footer={[
-                        <Button key="back" onClick={handleCancel}>
-                            Cancel
-                        </Button>,
-                        <Button key="submit" type="primary" loading={isLoading} onClick={() => form.submit()}>
-                            Submit
-                        </Button>,
-                    ]}
-                >
-                    <Form form={form} onFinish={onFinish} autoComplete="off" layout="vertical">
-                        <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input the title!" }]}>
-                            <Input />
-                        </Form.Item>
+            <Modal
+                title={selectedsubCategory ? "Edit subCategory" : "Add subCategory"}
+                open={isModalOpen}
+                onCancel={handleCancel}
+                onOk={form.submit}
+                destroyOnClose
+                okText="Submit"
+                cancelText="Cancel"
+                confirmLoading={isLoading}
+            >
+                <Form form={form} layout="vertical" onFinish={handleFinish}>
+                    <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input the title!" }]}>
+                        <Input placeholder="Enter title" />
+                    </Form.Item>
 
-                        <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-                            <Input.TextArea />
-                        </Form.Item>
-
-                        <Form.Item label="Category" name="category" rules={[{ required: true, message: "Please select a category!" }]}>
-                            <Select placeholder="Select a category">
-                                {/* Replace with actual categories fetched from API */}
-                                <Option value="1">Category 1</Option>
-                                <Option value="2">Category 2</Option>
-                                <Option value="3">Category 3</Option>
-                            </Select>
-                        </Form.Item>
-                    </Form>
-                </Modal>
-            </div>
-        </>
+                    <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
+                        <Input.TextArea placeholder="Enter description" />
+                    </Form.Item>
+                    <Form.Item label="Select Category" name="category" rules={[{ required: true, message: "Please input the description!" }]}>
+                        <Select
+                            showSearch
+                            placeholder="Select a person"
+                            filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                        >
+                            {categoryList?.data?.length > 0 &&
+                                categoryList.data.map((item, ind) => (
+                                    <Select.Option key={ind} value={item._id}>
+                                        {console.log("item", item)}
+                                        {item?.title}
+                                    </Select.Option>
+                                ))}
+                        </Select>
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </div>
     );
 };
 
-export default SubcategoryPage;
+export default SubCategoryPage;
