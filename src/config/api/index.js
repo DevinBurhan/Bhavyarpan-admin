@@ -23,8 +23,8 @@ const API = {
     productMaster: {
         get: "productMaster/list",
         add: "productMaster/create",
-        update: "productMaster",
-        delete: "productMaster",
+        update: "productMaster/",
+        delete: "productMaster/",
     },
     banner: {
         get: "banner/list",

@@ -4,9 +4,10 @@ const actions = {
     PRODUCTMASTER_UPDATE: "PRODUCTMASTER_UPDATE",
     PRODUCTMASTER_DELETE: "PRODUCTMASTER_DELETE",
 
-    getproductMaster: () => {
+    getproductMaster: (data) => {
         return {
             type: actions.PRODUCTMASTER_GET,
+            data,
         };
     },
     addproductMaster: (data) => {

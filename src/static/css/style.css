@@ -3,7 +3,9 @@
 iframe {
     pointer-events: none;
 }
-
+.ant-upload-list {
+    display: none;
+}
 .spin {
     height: 100vh;
     display: flex;

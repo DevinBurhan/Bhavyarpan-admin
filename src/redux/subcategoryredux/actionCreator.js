@@ -2,16 +2,16 @@ import { Pagination, message } from "antd";
 import { API } from "../../config/api";
 import { DataService } from "../../config/dataService/dataService";
 import actions from "./action";
+import { paramsToQueryString } from "../../utility/commonFunction";
 
 const { getSubcategory, addSubcategory, updateSubcategory } = actions;
 
-export const getSubcategoriesAPI = () => {
+export const getSubcategoriesAPI = (params) => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.get(API.subCategory.get);
-            console.log("respresp", resp.data);
+            let queryString = paramsToQueryString(params);
+            const resp = await DataService.get(API.subCategory.get + queryString);
             if (resp.data.status) {
-                console.log("respresp", resp.data);
                 dispatch(getSubcategory(resp.data));
                 return true;
             } else {

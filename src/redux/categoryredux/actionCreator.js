@@ -2,15 +2,15 @@ import { message } from "antd";
 import { API } from "../../config/api";
 import { DataService } from "../../config/dataService/dataService";
 import actions from "./action";
+import { paramsToQueryString } from "../../utility/commonFunction";
 
 const { getCategory, addCategory, categoryErr, updateCategory, deleteCategory } = actions;
 
-export const getCategoiryAPI = () => {
+export const getCategoiryAPI = (params) => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.get(API.category.get, {
-                pagination: true, // Include pagination parameter
-            });
+            let queryString = paramsToQueryString(params);
+            const resp = await DataService.get(API.category.get + queryString);
             if (resp.data.message) {
                 dispatch(getCategory(resp.data));
 
