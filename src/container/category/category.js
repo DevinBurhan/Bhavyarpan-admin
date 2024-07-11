@@ -93,7 +93,7 @@ const CategoryPage = () => {
         setIsModalOpen(false);
         setMediaFile();
         setMediaPreview();
-        setSelectedId(null);
+        setSelectedId();
         form.resetFields();
     };
 
@@ -155,7 +155,14 @@ const CategoryPage = () => {
                                 <Input type="search" placeholder={"Search categroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} />
                             </Col>
                             <Col>
-                                <Button style={{ height: "47.56px" }} type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
+                                <Button
+                                    style={{ height: "47.56px" }}
+                                    type="primary"
+                                    icon={<PlusOutlined />}
+                                    onClick={() => {
+                                        setIsModalOpen(true);
+                                    }}
+                                >
                                     Add Category
                                 </Button>
                             </Col>

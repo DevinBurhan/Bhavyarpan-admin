@@ -16,9 +16,9 @@ const API = {
     },
     subCategory: {
         add: "subCategory/create ",
-        update: "subCategory",
+        update: "subCategory/",
         get: "subCategory/list",
-        delete: "subCategory",
+        delete: "subCategory/",
     },
     productMaster: {
         get: "productMaster/list",

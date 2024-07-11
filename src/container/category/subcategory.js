@@ -8,13 +8,13 @@ import { getCategoiryAPI } from "../../redux/categoryredux/actionCreator";
 const SubCategoryPage = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
-    const [dataSource, setDataSource] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedsubCategory, setSelectedsubCategory] = useState(null);
     const [isLoading, setIsLoading] = useState(false); //loadder
     const [selectedId, setSelectedId] = useState(null);
 
     const data = useSelector((state) => state?.subcategoryReducer?.subCategory);
+    console.log("file: subcategory.js:18  SubCategoryPage  data", data);
     const categoryList = useSelector((state) => state?.categoryReducer?.Categories);
     console.log("file: SubCategory.js:22  SubCategoryPage  categoryList", data);
 
@@ -61,20 +61,12 @@ const SubCategoryPage = () => {
     };
     const handleFinish = async (values) => {
         setIsLoading(true);
-        // const form_data = new FormData();
-
-        // form_data.append("title", values.title);
-        // form_data.append("description", values.description);
-        // form_data.append("category", values.category);
 
         let resp;
 
         if (selectedId !== null) {
             //update logic
 
-            for (const pair of form_data.entries()) {
-                console.log("pair : ", pair);
-            }
             resp = await dispatch(updateSubcategoryAPI(selectedId, values)); //update api
         } else {
             //add logic
@@ -166,6 +158,7 @@ const SubCategoryPage = () => {
                     </Form.Item>
                     <Form.Item label="Select Category" name="category" rules={[{ required: true, message: "Please input the description!" }]}>
                         <Select
+                            size="large"
                             showSearch
                             placeholder="Select Category"
                             filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
