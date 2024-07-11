@@ -81,7 +81,7 @@ const SubCategoryPage = () => {
 
             resp = await dispatch(addSubcategoryAPI(form_data)); //add api
         }
-        console.log("safdsfgf");
+        // console.log("safdsfgf");
         if (resp) {
             handleCancel();
             getApi();
