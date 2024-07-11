@@ -16,7 +16,7 @@ const SubCategoryPage = () => {
 
     const data = useSelector((state) => state?.subcategoryReducer?.subCategory);
     const categoryList = useSelector((state) => state?.categoryReducer?.Categories);
-    console.log("file: SubCategory.js:22  SubCategoryPage  categoryList", categoryList);
+    console.log("file: SubCategory.js:22  SubCategoryPage  categoryList", data);
 
     useEffect(() => {
         getApi();
@@ -61,11 +61,11 @@ const SubCategoryPage = () => {
     };
     const handleFinish = async (values) => {
         setIsLoading(true);
-        const form_data = new FormData();
+        // const form_data = new FormData();
 
-        form_data.append("title", values.title);
-        form_data.append("description", values.description);
-        form_data.append("category", values.category);
+        // form_data.append("title", values.title);
+        // form_data.append("description", values.description);
+        // form_data.append("category", values.category);
 
         let resp;
 
@@ -75,11 +75,11 @@ const SubCategoryPage = () => {
             for (const pair of form_data.entries()) {
                 console.log("pair : ", pair);
             }
-            resp = await dispatch(updateSubcategoryAPI(selectedId, form_data)); //update api
+            resp = await dispatch(updateSubcategoryAPI(selectedId, values)); //update api
         } else {
             //add logic
 
-            resp = await dispatch(addSubcategoryAPI(form_data)); //add api
+            resp = await dispatch(addSubcategoryAPI(values)); //add api
         }
         // console.log("safdsfgf");
         if (resp) {
@@ -167,7 +167,7 @@ const SubCategoryPage = () => {
                     <Form.Item label="Select Category" name="category" rules={[{ required: true, message: "Please input the description!" }]}>
                         <Select
                             showSearch
-                            placeholder="Select a person"
+                            placeholder="Select Category"
                             filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
                         >
                             {categoryList?.data?.length > 0 &&

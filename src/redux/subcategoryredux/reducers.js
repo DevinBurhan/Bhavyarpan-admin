@@ -1,8 +1,8 @@
 import actions from "./action";
 const initialState = {
     subCategory: [],
-    addsubCategory: {},
-    updatesubCategory: {},
+    addSubcategory: {},
+    updateSubcategory: {},
     deletesubCategory: {},
 };
 
@@ -14,17 +14,17 @@ const subCategoryReducer = (state = initialState, action) => {
         case actions.SUBCATEGORY_GET:
             return {
                 ...state,
-                banner: data,
+                subCategory: data,
             };
         case actions.SUBCATEGORY_ADD:
             return {
                 ...state,
-                addbanner: data,
+                addSubcategory: data,
             };
         case actions.SUBCATEGORY_UPDATE:
             return {
                 ...state,
-                updatebanner: data,
+                updateSubcategory: data,
             };
         case actions.SUBCATEGORY_DELETE:
             return {
