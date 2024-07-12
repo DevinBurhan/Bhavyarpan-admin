@@ -25,7 +25,10 @@ const SubCategoryPage = () => {
 
     const getApi = async () => {
         setIsLoading(true);
-        await dispatch(getSubcategoriesAPI());
+        let params = {
+            // pagination: false,
+        };
+        await dispatch(getSubcategoriesAPI(params));
         setIsLoading(false);
     };
     const getCategoryList = async () => {

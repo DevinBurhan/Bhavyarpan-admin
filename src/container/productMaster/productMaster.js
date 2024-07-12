@@ -1,79 +1,88 @@
-import React, { useState } from "react";
-import { Button, Table, Space, Modal, Form, Input } from "antd";
-import { SearchOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
-import { addCategoiryAPI, deleteCategoiryAPI, getproductMasterAPI, updateCategoiryAPI } from "../../redux/productMasterredux/actionCreator";
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Form, Modal, Space, Table } from "antd";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { deleteproductMasterAPI, getproductMasterAPI } from "../../redux/productMasterredux/actionCreator";
 
 const ProductMasterPage = () => {
     const dispatch = useDispatch();
-    const [form] = Form.useForm();
-    const [dataSource, setDataSource] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [count, setCount] = useState(0);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [isLoading, setIsLoading] = useState(false); //loadder
 
-    const handleModalOpen = () => {
-        setIsModalOpen(true);
+    const data = useSelector((state) => state?.productMasterReducer?.productMaster);
+
+    useEffect(() => {
+        getApi(true, page, limit);
+    }, []);
+    const getApi = async (pagination, page, limit) => {
+        setIsLoading(true);
+        let params = {
+            pagination,
+            page,
+            limit,
+        };
+        await dispatch(getproductMasterAPI(params));
+        setIsLoading(false);
     };
+    const onPageChange = async (page) => {
+        setPage(page);
+        getApi(true, page, limit);
+    };
+    const handleModalOpen = () => {};
 
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
 
-    const onFinish = (values) => {
-        const newData = {
-            key: count,
-            title: values.title,
-            description: values.description,
-            mainImage: values.mainImage,
-            behindImage: values.behindImage,
-            subsidiaryImage: values.subsidiaryImage,
-            beforePrice: values.beforePrice,
-            afterPrice: values.afterPrice,
-            saveRs: values.saveRs,
-            inStockQuantity: values.inStockQuantity,
-            outStockQuantity: values.outStockQuantity,
-        };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
-        setIsModalOpen(false);
-    };
+    const onFinish = async (values) => {};
 
-    const onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
+    const handleDelete = (record) => {
+        Modal.confirm({
+            title: "Are you sure you want to delete this Product?",
+            onOk: async () => {
+                if (record._id) {
+                    let resp = await dispatch(deleteproductMasterAPI(record._id));
+                    if (resp) {
+                        getApi();
+                    }
+                }
+            },
+        });
     };
-
     const columns = [
         {
             title: "Sr. No",
-            dataIndex: "key",
+            dataIndex: "_id",
             key: "key",
-            render: (text, record, index) => index + 1,
+            render: (text, object, index) => index + 1 + (page - 1) * limit,
         },
         {
             title: "Title",
             dataIndex: "title",
             key: "title",
         },
-        {
-            title: "Description",
-            dataIndex: "description",
-            key: "description",
-        },
-        {
-            title: "Main Image",
-            dataIndex: "mainImage",
-            key: "mainImage",
-        },
-        {
-            title: "Behind Image",
-            dataIndex: "behindImage",
-            key: "behindImage",
-        },
-        {
-            title: "Subsidiary Images",
-            dataIndex: "subsidiaryImage",
-            key: "subsidiaryImage",
-        },
+        // {
+        //     title: "Description",
+        //     dataIndex: "description",
+        //     key: "description",
+        // // },
+        // {
+        //     title: "Main Image",
+        //     dataIndex: "mainImage",
+        //     key: "mainImage",
+        // },
+        // {
+        //     title: "Behind Image",
+        //     dataIndex: "behindImage",
+        //     key: "behindImage",
+        // },
+        // {
+        //     title: "Subsidiary Images",
+        //     dataIndex: "subsidiaryImage",
+        //     key: "subsidiaryImage",
+        // },
         {
             title: "Before Price",
             dataIndex: "beforePrice",
@@ -84,11 +93,11 @@ const ProductMasterPage = () => {
             dataIndex: "afterPrice",
             key: "afterPrice",
         },
-        {
-            title: "Save Rs",
-            dataIndex: "saveRs",
-            key: "saveRs",
-        },
+        // {
+        //     title: "Save Rs",
+        //     dataIndex: "saveRs",
+        //     key: "saveRs",
+        // },
         {
             title: "In Stock Quantity",
             dataIndex: "inStockQuantity",
@@ -104,10 +113,12 @@ const ProductMasterPage = () => {
             key: "action",
             render: (text, record) => (
                 <Space size="middle">
-                    <Button type="" icon={<EditOutlined />} size="small">
-                        Edit
-                    </Button>
-                    <Button type="" icon={<DeleteOutlined />} size="small">
+                    <Link to={`/productMaster/add?query=${record?._id}`}>
+                        <Button type="" icon={<EditOutlined />} size="small">
+                            Edit
+                        </Button>
+                    </Link>
+                    <Button type="" icon={<DeleteOutlined />} size="small" onClick={() => handleDelete(record)}>
                         Delete
                     </Button>
                 </Space>
@@ -130,80 +141,19 @@ const ProductMasterPage = () => {
                 </Button>
             </div>
 
-            <Table dataSource={dataSource} columns={columns} />
-
-            <AddProductModal visible={isModalOpen} onCancel={handleModalClose} onFinish={onFinish} onFinishFailed={onFinishFailed} />
+            <Table
+                loading={isLoading}
+                dataSource={data?.data?.length > 0 ? data.data : []}
+                columns={columns}
+                pagination={{
+                    showSizeChanger: false,
+                    pageSize: limit,
+                    total: data?.totalCount,
+                    current: page,
+                    onChange: onPageChange,
+                }}
+            />
         </div>
-    );
-};
-
-const AddProductModal = ({ visible, onCancel, onFinish, onFinishFailed }) => {
-    const [form] = Form.useForm();
-
-    const handleFinish = () => {
-        form.validateFields()
-            .then((values) => {
-                onFinish(values);
-                form.resetFields();
-            })
-            .catch((errorInfo) => {
-                onFinishFailed(errorInfo);
-            });
-    };
-
-    return (
-        <Modal title="Add Product" open={visible} onCancel={onCancel} onOk={handleFinish} destroyOnClose okText="Submit" cancelText="Cancel">
-            <Form
-                form={form}
-                name="addProduct"
-                labelCol={{ span: 6 }}
-                wrapperCol={{ span: 18 }}
-                initialValues={{ remember: true }}
-                autoComplete="off"
-                onFinish={handleFinish}
-                onFinishFailed={onFinishFailed}
-            >
-                <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input the title!" }]}>
-                    <Input placeholder="Enter title" />
-                </Form.Item>
-
-                <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-                    <Input.TextArea placeholder="Enter description" />
-                </Form.Item>
-
-                <Form.Item label="Main Image" name="mainImage" rules={[{ required: true, message: "Please input the main image!" }]}>
-                    <Input placeholder="Enter main image URL" />
-                </Form.Item>
-
-                <Form.Item label="Behind Image" name="behindImage">
-                    <Input placeholder="Enter behind image URL" />
-                </Form.Item>
-
-                <Form.Item label="Subsidiary Image" name="subsidiaryImage">
-                    <Input placeholder="Enter subsidiary image URL" />
-                </Form.Item>
-
-                <Form.Item label="Before Price" name="beforePrice" rules={[{ required: true, message: "Please input the before price!" }]}>
-                    <Input placeholder="Enter before price" />
-                </Form.Item>
-
-                <Form.Item label="After Price" name="afterPrice" rules={[{ required: true, message: "Please input the after price!" }]}>
-                    <Input placeholder="Enter after price" />
-                </Form.Item>
-
-                <Form.Item label="Save Rs" name="saveRs">
-                    <Input placeholder="Enter save Rs" />
-                </Form.Item>
-
-                <Form.Item label="In Stock Quantity" name="inStockQuantity" rules={[{ required: true, message: "Please input the in stock quantity!" }]}>
-                    <Input placeholder="Enter in stock quantity" />
-                </Form.Item>
-
-                <Form.Item label="Out Stock Quantity" name="outStockQuantity" rules={[{ required: true, message: "Please input the out stock quantity!" }]}>
-                    <Input placeholder="Enter out stock quantity" />
-                </Form.Item>
-            </Form>
-        </Modal>
     );
 };
 

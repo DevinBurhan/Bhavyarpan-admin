@@ -7,7 +7,9 @@ import {
     addproductMasterAPI,
     deleteCategoiryAPI,
     getproductMasterAPI,
+    getproductMasterDetailAPI,
     updateCategoiryAPI,
+    updateproductMasterAPI,
 } from "../../redux/productMasterredux/actionCreator";
 import { getCategoiryAPI } from "../../redux/categoryredux/actionCreator";
 import { getSubcategoriesAPI } from "../../redux/subcategoryredux/actionCreator";
@@ -33,15 +35,33 @@ const AddUpdateProduct = () => {
     const [behindImgPreview, setBehindImgPreview] = useState();
     const [behindImgFile, setBehindFile] = useState();
     const [render, setRender] = useState(false);
-    console.log("file: AddUpdateProduct.js:23  AddUpdateProduct  imagesArray", imagesArray);
+    const [productId, setProductId] = useState();
 
     const categoryList = useSelector((state) => state?.categoryReducer?.Categories);
     const subCategoryList = useSelector((state) => state?.subcategoryReducer?.subCategory);
 
     useEffect(() => {
+        let ID = window.location.href.split("=").pop();
+        if (ID) {
+            setProductId(ID);
+            getApi(ID);
+        }
+        console.log("file: AddUpdateProduct.js:42  useEffect  ID", ID);
         getCategoryList();
-        getSubCategoryList();
     }, []);
+
+    const getApi = async (id) => {
+        setIsLoading(true);
+        let resp = await dispatch(getproductMasterDetailAPI(id));
+        console.log("file: AddUpdateProduct.js:56  getApi  resp", resp);
+        if (resp) {
+            setValue(resp.data.isEnabledMinQuantity);
+            setMainImgPreview(resp.data.mainImage);
+            setBehindImgPreview(resp.data.behindImage);
+            form.setFieldsValue(resp.data);
+        }
+        setIsLoading(false);
+    };
 
     const getCategoryList = async () => {
         setIsLoading(true);
@@ -52,10 +72,11 @@ const AddUpdateProduct = () => {
         setIsLoading(false);
     };
 
-    const getSubCategoryList = async () => {
+    const getSubCategoryList = async (value) => {
         setIsLoading(true);
         let params = {
-            // pagination: false,
+            categoryId: value,
+            pagination: false,
         };
         await dispatch(getSubcategoriesAPI(params));
         setIsLoading(false);
@@ -111,59 +132,104 @@ const AddUpdateProduct = () => {
         const form_data = new FormData();
         delete values.mainImage;
         delete values.behindImage;
-
-        if (mainImgFile) {
-            form_data.append("mainImage", mainImgFile);
-        }
-        if (behindImgFile) {
-            form_data.append("behindImage", behindImgFile);
-        }
-        form_data.append("isEnabledMinQuantity", value);
-        if (!value) {
-            form_data.append("minOrderQuantity", 1);
-        }
-        if (imagesArray !== "" && imagesArray.length > 0) {
-            if (imagesArray.length === 1) {
-                form_data.append(`subsidaryImages`, ...[imagesArr.file.originFileObj ? imagesArr.file.originFileObj : imagesArr.file]);
-            } else {
-                for (let i = 0; i < imagesArray.length; i++) {
-                    form_data.append(`subsidaryImages`, imagesArray[i].file.originFileObj);
-                }
+        if (productId && productId !== "") {
+            delete values.productSku;
+            if (mainImgFile) {
+                form_data.append("mainImage", mainImgFile);
             }
-        } else {
-            message.error("Please include at least one image of the car.");
-            return;
-        }
-        const appendValues = (obj, prefix = "") => {
-            for (const key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    const value = obj[key];
-                    const currentKey = prefix ? `${prefix}[${key}]` : key;
+            if (behindImgFile) {
+                form_data.append("behindImage", behindImgFile);
+            }
+            if (!value) {
+                form_data.append("minOrderQuantity", 1);
+            }
+            const appendValues = (obj, prefix = "") => {
+                for (const key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                        const value = obj[key];
+                        const currentKey = prefix ? `${prefix}[${key}]` : key;
+                        if (typeof value === "object" && value !== null) {
+                            appendValues(value, currentKey);
+                        } else {
+                            form_data.append(currentKey, value);
+                        }
+                    }
+                }
+            };
+            for (const key in values) {
+                if (values.hasOwnProperty(key)) {
+                    const value = values[key];
+
                     if (typeof value === "object" && value !== null) {
-                        appendValues(value, currentKey);
+                        appendValues(value, key);
                     } else {
-                        form_data.append(currentKey, value);
+                        // Append non-nested values directly
+                        form_data.append(key, value);
                     }
                 }
             }
-        };
-        for (const key in values) {
-            if (values.hasOwnProperty(key)) {
-                const value = values[key];
+            for (const pair of form_data.entries()) {
+                console.log("handleSaveCourseDetails : ", pair, typeof pair[1]);
+            }
 
-                if (typeof value === "object" && value !== null) {
-                    appendValues(value, key);
+            const resp = await dispatch(updateproductMasterAPI(productId, form_data));
+            if (resp) {
+                form.resetFields();
+                getApi(productId);
+            }
+        } else if (!productId) {
+            if (mainImgFile) {
+                form_data.append("mainImage", mainImgFile);
+            }
+            if (behindImgFile) {
+                form_data.append("behindImage", behindImgFile);
+            }
+            if (!value) {
+                form_data.append("minOrderQuantity", 1);
+            }
+            if (imagesArray !== "" && imagesArray.length > 0) {
+                if (imagesArray.length === 1) {
+                    form_data.append(`subsidaryImages`, ...[imagesArr.file.originFileObj ? imagesArr.file.originFileObj : imagesArr.file]);
                 } else {
-                    // Append non-nested values directly
-                    form_data.append(key, value);
+                    for (let i = 0; i < imagesArray.length; i++) {
+                        form_data.append(`subsidaryImages`, imagesArray[i].file.originFileObj);
+                    }
+                }
+            } else {
+                message.error("Please include at least one image of the car.");
+                return;
+            }
+            const appendValues = (obj, prefix = "") => {
+                for (const key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                        const value = obj[key];
+                        const currentKey = prefix ? `${prefix}[${key}]` : key;
+                        if (typeof value === "object" && value !== null) {
+                            appendValues(value, currentKey);
+                        } else {
+                            form_data.append(currentKey, value);
+                        }
+                    }
+                }
+            };
+            for (const key in values) {
+                if (values.hasOwnProperty(key)) {
+                    const value = values[key];
+
+                    if (typeof value === "object" && value !== null) {
+                        appendValues(value, key);
+                    } else {
+                        // Append non-nested values directly
+                        form_data.append(key, value);
+                    }
                 }
             }
-        }
-        for (const pair of form_data.entries()) {
-            console.log("handleSaveCourseDetails : ", pair);
-        }
+            for (const pair of form_data.entries()) {
+                console.log("handleSaveCourseDetails : ", pair, typeof pair[1]);
+            }
 
-        const resp = await dispatch(addproductMasterAPI(form_data));
+            const resp = await dispatch(addproductMasterAPI(form_data));
+        }
     };
 
     return (
@@ -182,7 +248,7 @@ const AddUpdateProduct = () => {
                     </Col>
                     <Col span={24} md={6}>
                         <Form.Item label="Product SKU" name="productSku" rules={[{ required: true, message: "Please input the title!" }]}>
-                            <Input placeholder="Enter Product SKU" />
+                            <Input disabled={productId && productSku !== "" ? true : false} placeholder="Enter Product SKU" />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -198,6 +264,9 @@ const AddUpdateProduct = () => {
                                 showSearch
                                 placeholder="Select Category"
                                 filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                                onChange={(value) => {
+                                    getSubCategoryList(value);
+                                }}
                             >
                                 {categoryList?.data?.length > 0 &&
                                     categoryList.data.map((item, ind) => (
@@ -254,7 +323,7 @@ const AddUpdateProduct = () => {
                     <Col span={24} md={6}>
                         <Form.Item
                             label="Do you want minimum order Quantity?"
-                            name="outStockQuantity"
+                            name="isEnabledMinQuantity"
                             rules={[{ required: true, message: "Please input OutStock Quantity!" }]}
                         >
                             <Radio.Group onChange={onChange} value={value}>
@@ -301,7 +370,7 @@ const AddUpdateProduct = () => {
                     </Col>
 
                     <Col span={24} md={4}>
-                        <Form.Item label="Length" name={["dimensions", "Length"]} rules={[{ required: true, message: "Please enter Length!" }]}>
+                        <Form.Item label="Length" name={["dimensions", "length"]} rules={[{ required: true, message: "Please enter Length!" }]}>
                             <Input type="number" placeholder="Enter Length" />
                         </Form.Item>
                     </Col>

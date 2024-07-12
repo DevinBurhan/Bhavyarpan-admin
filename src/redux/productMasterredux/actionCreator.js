@@ -2,16 +2,36 @@ import { message } from "antd";
 import { API } from "../../config/api";
 import { DataService } from "../../config/dataService/dataService";
 import actions from "./action";
+import { paramsToQueryString } from "../../utility/commonFunction";
 const { getproductMaster, addproductMaster, subproductMasterErr, updateproductMaster, deleteproductMaster } = actions;
 
-export const getproductMasterAPI = () => {
+export const getproductMasterAPI = (params) => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.get(API.productMaster.get);
+            let queryStirng = paramsToQueryString(params);
+            const resp = await DataService.get(API.productMaster.get + queryStirng);
             if (resp.data.status) {
                 dispatch(getproductMaster(resp.data));
                 message.success(resp.data.message);
                 return true;
+            } else {
+                return false;
+            }
+        } catch (err) {
+            dispatch(subproductMasterErr(err));
+            message.error("Failed to fetch productMaster");
+            return false;
+        }
+    };
+};
+
+export const getproductMasterDetailAPI = (id) => {
+    return async (dispatch) => {
+        try {
+            const resp = await DataService.get(API.productMaster.detail + id);
+            if (resp.data.status) {
+                message.success(resp.data.message);
+                return resp.data;
             } else {
                 return false;
             }

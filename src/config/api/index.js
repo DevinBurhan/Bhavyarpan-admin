@@ -16,12 +16,14 @@ const API = {
     },
     subCategory: {
         add: "subCategory/create ",
+
         update: "subCategory/",
         get: "subCategory/list",
         delete: "subCategory/",
     },
     productMaster: {
         get: "productMaster/list",
+        detail: "productMaster/",
         add: "productMaster/create",
         update: "productMaster/",
         delete: "productMaster/",
