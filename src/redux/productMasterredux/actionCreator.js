@@ -18,7 +18,6 @@ export const getproductMasterAPI = (params) => {
                 return false;
             }
         } catch (err) {
-            dispatch(subproductMasterErr(err));
             message.error("Failed to fetch productMaster");
             return false;
         }
@@ -36,7 +35,6 @@ export const getproductMasterDetailAPI = (id) => {
                 return false;
             }
         } catch (err) {
-            dispatch(subproductMasterErr(err));
             message.error("Failed to fetch productMaster");
             return false;
         }
@@ -55,7 +53,6 @@ export const addproductMasterAPI = (payload) => {
                 return false;
             }
         } catch (err) {
-            dispatch(subproductMasterErr(err));
             message.error("Failed to add productMaster");
             return false;
         }
@@ -75,7 +72,6 @@ export const updateproductMasterAPI = (productMasterId, payload) => {
                 return false;
             }
         } catch (err) {
-            dispatch(subproductMasterErr(err));
             message.error("Failed to update productMaster");
             return false;
         }
@@ -94,7 +90,6 @@ export const deleteproductMasterAPI = (productMasterId) => {
                 return false;
             }
         } catch (err) {
-            dispatch(subproductMasterErr(err));
             message.error("Failed to delete productMaster");
             return false;
         }

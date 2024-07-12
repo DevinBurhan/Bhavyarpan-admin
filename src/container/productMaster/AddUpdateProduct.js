@@ -1,19 +1,11 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Input, Modal, Radio, Row, Select, Space, Table, Upload, message } from "antd";
+import { Button, Col, Form, Input, Radio, Row, Select, Upload, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-    addCategoiryAPI,
-    addproductMasterAPI,
-    deleteCategoiryAPI,
-    getproductMasterAPI,
-    getproductMasterDetailAPI,
-    updateCategoiryAPI,
-    updateproductMasterAPI,
-} from "../../redux/productMasterredux/actionCreator";
 import { getCategoiryAPI } from "../../redux/categoryredux/actionCreator";
+import { addproductMasterAPI, getproductMasterDetailAPI, updateproductMasterAPI } from "../../redux/productMasterredux/actionCreator";
 import { getSubcategoriesAPI } from "../../redux/subcategoryredux/actionCreator";
 
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import "./Product.css";
 
 const getBase64 = (file) =>
@@ -26,6 +18,7 @@ const getBase64 = (file) =>
 const AddUpdateProduct = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
+    const history = useHistory();
 
     const [isLoading, setIsLoading] = useState(false); //loadder
     const [value, setValue] = useState(false);
@@ -41,12 +34,15 @@ const AddUpdateProduct = () => {
     const subCategoryList = useSelector((state) => state?.subcategoryReducer?.subCategory);
 
     useEffect(() => {
-        let ID = window.location.href.split("=").pop();
-        if (ID) {
-            setProductId(ID);
-            getApi(ID);
+        let ID = window.location.href.split("=");
+        // console.log("file: AddUpdateProduct.js:45  useEffect  ID", ID.length);
+        if (ID.length === 2) {
+            let store = ID.pop();
+            console.log("file: AddUpdateProduct.js:46  useEffect  ID", store);
+            setProductId(store);
+            getApi(store);
         }
-        console.log("file: AddUpdateProduct.js:42  useEffect  ID", ID);
+        // console.log("file: AddUpdateProduct.js:42  useEffect  ID", ID);
         getCategoryList();
     }, []);
 
@@ -55,6 +51,19 @@ const AddUpdateProduct = () => {
         let resp = await dispatch(getproductMasterDetailAPI(id));
         console.log("file: AddUpdateProduct.js:56  getApi  resp", resp);
         if (resp) {
+            let array = [];
+            if (resp?.data?.subsidaryImages?.length > 0) {
+                resp.data.subsidaryImages.map((item, index) => {
+                    let obj = {};
+                    obj.src = item;
+                    obj.id = 0;
+                    obj.file = undefined;
+
+                    array.push(obj);
+                });
+            }
+            setImagesArray(array);
+            getSubCategoryList(resp.data.category);
             setValue(resp.data.isEnabledMinQuantity);
             setMainImgPreview(resp.data.mainImage);
             setBehindImgPreview(resp.data.behindImage);
@@ -132,17 +141,35 @@ const AddUpdateProduct = () => {
         const form_data = new FormData();
         delete values.mainImage;
         delete values.behindImage;
+
+        if (mainImgFile) {
+            form_data.append("mainImage", mainImgFile);
+        }
+        if (behindImgFile) {
+            form_data.append("behindImage", behindImgFile);
+        }
+        if (!value) {
+            form_data.append("minOrderQuantity", 1);
+        }
+        if (imagesArray !== "" && imagesArray.length > 0) {
+            if (imagesArray.length === 1) {
+                if (imagesArray[0].src) {
+                    form_data.append(`subsidaryImages`, ...[imagesArray[0].file.originFileObj ? imagesArray[0].file.originFileObj : imagesArray[0].file]);
+                }
+            } else {
+                for (let i = 0; i < imagesArray.length; i++) {
+                    if (imagesArray[i].file) {
+                        form_data.append(`subsidaryImages`, imagesArray[i].file.originFileObj);
+                    }
+                }
+            }
+        } else {
+            message.error("Please include at least one image of the car.");
+            return;
+        }
         if (productId && productId !== "") {
             delete values.productSku;
-            if (mainImgFile) {
-                form_data.append("mainImage", mainImgFile);
-            }
-            if (behindImgFile) {
-                form_data.append("behindImage", behindImgFile);
-            }
-            if (!value) {
-                form_data.append("minOrderQuantity", 1);
-            }
+
             const appendValues = (obj, prefix = "") => {
                 for (const key in obj) {
                     if (obj.hasOwnProperty(key)) {
@@ -178,27 +205,6 @@ const AddUpdateProduct = () => {
                 getApi(productId);
             }
         } else if (!productId) {
-            if (mainImgFile) {
-                form_data.append("mainImage", mainImgFile);
-            }
-            if (behindImgFile) {
-                form_data.append("behindImage", behindImgFile);
-            }
-            if (!value) {
-                form_data.append("minOrderQuantity", 1);
-            }
-            if (imagesArray !== "" && imagesArray.length > 0) {
-                if (imagesArray.length === 1) {
-                    form_data.append(`subsidaryImages`, ...[imagesArr.file.originFileObj ? imagesArr.file.originFileObj : imagesArr.file]);
-                } else {
-                    for (let i = 0; i < imagesArray.length; i++) {
-                        form_data.append(`subsidaryImages`, imagesArray[i].file.originFileObj);
-                    }
-                }
-            } else {
-                message.error("Please include at least one image of the car.");
-                return;
-            }
             const appendValues = (obj, prefix = "") => {
                 for (const key in obj) {
                     if (obj.hasOwnProperty(key)) {

@@ -2,11 +2,12 @@ import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant
 import { Button, Form, Modal, Space, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { deleteproductMasterAPI, getproductMasterAPI } from "../../redux/productMasterredux/actionCreator";
 
 const ProductMasterPage = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [isLoading, setIsLoading] = useState(false); //loadder
@@ -133,12 +134,14 @@ const ProductMasterPage = () => {
             </h1>
 
             <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-                <Button type="default" icon={<SearchOutlined />} style={{ marginRight: 10 }}>
+                {/* <Button type="default" icon={<SearchOutlined />} style={{ marginRight: 10 }}>
                     Search
-                </Button>
-                <Button type="primary" icon={<PlusOutlined />} onClick={handleModalOpen}>
-                    Add ProductMaster
-                </Button>
+                </Button> */}
+                <Link to={`/productMaster/add`}>
+                    <Button type="primary" icon={<PlusOutlined />}>
+                        Add ProductMaster
+                    </Button>
+                </Link>
             </div>
 
             <Table
