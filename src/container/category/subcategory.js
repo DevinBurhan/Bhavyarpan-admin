@@ -2,12 +2,14 @@ import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant
 import { Button, Col, Form, Input, Modal, Row, Select, Space, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addSubcategoryAPI, deleteSubcategoryAPI, getSubcategoriesAPI, updateSubcategoryAPI } from "../../redux/subcategoryredux/actionCreator";
 import { getCategoiryAPI } from "../../redux/categoryredux/actionCreator";
+import { addSubcategoryAPI, deleteSubcategoryAPI, getSubcategoriesAPI, updateSubcategoryAPI } from "../../redux/subcategoryredux/actionCreator";
 
 const SubCategoryPage = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(3);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedsubCategory, setSelectedsubCategory] = useState(null);
     const [isLoading, setIsLoading] = useState(false); //loadder
@@ -19,17 +21,23 @@ const SubCategoryPage = () => {
     console.log("file: SubCategory.js:22  SubCategoryPage  categoryList", data);
 
     useEffect(() => {
-        getApi();
+        getApi(true, page, limit);
         getCategoryList();
     }, []);
 
-    const getApi = async () => {
+    const getApi = async (pagination, page, limit) => {
         setIsLoading(true);
         let params = {
-            // pagination: false,
+            pagination,
+            page,
+            limit,
         };
         await dispatch(getSubcategoriesAPI(params));
         setIsLoading(false);
+    };
+    const onPageChange = async (page) => {
+        setPage(page);
+        getApi(true, page, limit);
     };
     const getCategoryList = async () => {
         setIsLoading(true);
@@ -93,7 +101,7 @@ const SubCategoryPage = () => {
             title: "Sr. No",
             dataIndex: "key",
             key: "key",
-            render: (text, record, index) => index + 1,
+            render: (text, object, index) => index + 1 + (page - 1) * limit,
         },
         {
             title: "Title",
@@ -130,9 +138,7 @@ const SubCategoryPage = () => {
                 </Col>
                 <Col>
                     <Row gutter={[20, 20]}>
-                        <Col>
-                            <Input type="search" placeholder={"Search categroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} />
-                        </Col>
+                        <Col>{/* <Input type="search" placeholder={"Search categroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} /> */}</Col>
                         <Col>
                             <Button style={{ height: "47.56px" }} type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
                                 Add Subcategory
@@ -142,7 +148,18 @@ const SubCategoryPage = () => {
                 </Col>
             </Row>
 
-            <Table dataSource={data && data.data ? data.data : []} columns={columns} loading={isLoading} />
+            <Table
+                dataSource={data && data.data ? data.data : []}
+                columns={columns}
+                loading={isLoading}
+                pagination={{
+                    showSizeChanger: false,
+                    pageSize: limit,
+                    total: data?.totalCount,
+                    current: page,
+                    onChange: onPageChange,
+                }}
+            />
 
             <Modal
                 title={selectedsubCategory ? "Edit subCategory" : "Add subCategory"}

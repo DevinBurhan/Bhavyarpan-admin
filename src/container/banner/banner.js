@@ -19,6 +19,7 @@ const BannerPage = () => {
     const [mediaPreviewSmall, setMediaPreviewSmall] = useState(); //store preview img
 
     const data = useSelector((state) => state?.bannerReducer?.banner);
+    console.log("file: banner.js:22  BannerPage  data", data);
     const categoryList = useSelector((state) => state?.categoryReducer?.Categories);
     console.log("file: banner.js:22  BannerPage  categoryList", categoryList);
 

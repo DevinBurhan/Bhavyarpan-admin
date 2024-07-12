@@ -4,7 +4,7 @@ import { DataService } from "../../config/dataService/dataService";
 import actions from "./action";
 import { paramsToQueryString } from "../../utility/commonFunction";
 
-const { getCategory, addCategory, categoryErr, updateCategory, deleteCategory } = actions;
+const { getCategory, addCategory, updateCategory, deleteCategory } = actions;
 
 export const getCategoiryAPI = (params) => {
     return async (dispatch) => {
@@ -19,7 +19,6 @@ export const getCategoiryAPI = (params) => {
                 return false;
             }
         } catch (err) {
-            dispatch(categoryErr(err));
             message.error("Failed to fetch categories");
             return false;
         }
@@ -40,7 +39,6 @@ export const addCategoiryAPI = (payload) => {
                 return false;
             }
         } catch (err) {
-            dispatch(categoryErr(err));
             message.error("Failed to add categories");
             return false;
         }
@@ -80,7 +78,6 @@ export const deleteCategoiryAPI = (categoryId) => {
                 return false;
             }
         } catch (err) {
-            dispatch(categoryErr(err));
             message.error("Failed to delete categories");
             return false;
         }
