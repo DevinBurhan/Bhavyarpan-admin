@@ -154,12 +154,12 @@ const AddUpdateProduct = () => {
         if (imagesArray !== "" && imagesArray.length > 0) {
             if (imagesArray.length === 1) {
                 if (imagesArray[0].src) {
-                    form_data.append(`subsidaryImages[0]`, ...[imagesArray[0].file.originFileObj ? imagesArray[0].file.originFileObj : imagesArray[0].file]);
+                    form_data.append(`subsidaryImages`, ...[imagesArray[0].file.originFileObj ? imagesArray[0].file.originFileObj : imagesArray[0].file]);
                 }
             } else {
                 for (let i = 0; i < imagesArray.length; i++) {
                     if (imagesArray[i].file) {
-                        form_data.append(`subsidaryImages[${i}]`, imagesArray[i].file.originFileObj);
+                        form_data.append(`subsidaryImages`, imagesArray[i].file.originFileObj);
                     }
                 }
             }

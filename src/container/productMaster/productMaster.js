@@ -45,7 +45,7 @@ const ProductMasterPage = () => {
                 if (record._id) {
                     let resp = await dispatch(deleteproductMasterAPI(record._id));
                     if (resp) {
-                        getApi();
+                        getApi(true, page, limit);
                     }
                 }
             },
