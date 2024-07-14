@@ -12,7 +12,7 @@ export const getBannerAPI = () => {
             console.log("action creator resp", resp);
             if (resp.data.status) {
                 dispatch(getBanner(resp.data));
-                message.success(resp.data.message);
+                // message.success(resp.data.message);
                 return true;
             } else {
                 return false;
@@ -30,7 +30,7 @@ export const addBannerAPI = (payload) => {
         try {
             // console.log("resp", API.banner.add);
             const resp = await DataService.post(API.banner.add, payload);
-            // console.log("resp", resp);
+            console.log("addresp", resp);
             if (resp.data.status) {
                 message.success(resp.data.message);
                 return true;
@@ -50,14 +50,16 @@ export const updateBannerAPI = (bannerId, payload) => {
             const resp = await DataService.put(API.banner.update + bannerId, payload);
 
             if (resp.data.status) {
-                dispatch(updateBanner(resp.data));
+                console.log("file: actionCreator.js:51  return  resp", resp.data.message);
                 message.success(resp.data.message);
+                dispatch(updateBanner(resp.data));
                 return true;
             } else {
                 message.error(resp.data.message);
                 return false;
             }
         } catch (error) {
+            console.log("file: actionCreator.js:62  return  error", error);
             return false;
         }
     };

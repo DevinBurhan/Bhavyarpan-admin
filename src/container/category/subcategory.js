@@ -9,7 +9,7 @@ const SubCategoryPage = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(3);
+    const [limit, setLimit] = useState(10);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedsubCategory, setSelectedsubCategory] = useState(null);
     const [isLoading, setIsLoading] = useState(false); //loadder
@@ -90,9 +90,9 @@ const SubCategoryPage = () => {
         // console.log("safdsfgf");
         if (resp) {
             handleCancel();
-            getApi();
+            getApi(true, page, limit);
         } else {
-            getApi();
+            getApi(true, page, limit);
         }
     };
 

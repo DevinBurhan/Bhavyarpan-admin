@@ -82,6 +82,7 @@ export const deleteproductMasterAPI = (productMasterId) => {
     return async (dispatch) => {
         try {
             const resp = await DataService.delete(API.productMaster.delete + productMasterId);
+            console.log("file: actionCreator.js:85  return  resp", resp);
             if (resp.data && resp.data.status) {
                 dispatch(deleteproductMaster(resp.data));
                 message.success(resp.data.message);

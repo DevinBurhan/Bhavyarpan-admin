@@ -10,19 +10,19 @@ const actions = {
             data,
         };
     },
-    addbanner: (data) => {
+    addBanner: (data) => {
         return {
             type: actions.BANNER_ADD,
             data,
         };
     },
-    updatebanner: (data) => {
+    updateBanner: (data) => {
         return {
             type: actions.BANNER_UPDATE,
             data,
         };
     },
-    deletebanner: (data) => {
+    deleteBanner: (data) => {
         return {
             type: actions.BANNER_DELETE,
             data,

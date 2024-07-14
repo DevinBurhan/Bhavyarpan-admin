@@ -100,6 +100,7 @@ const BannerPage = () => {
                 console.log("pair : ", pair);
             }
             resp = await dispatch(updateBannerAPI(selectedId, form_data)); //update api
+            console.log("file: banner.js:103  handleFinish  respdsfsdfsdf", resp);
         } else {
             //add logic
             if (!mediaFileLarge) {
