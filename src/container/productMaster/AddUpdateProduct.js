@@ -107,7 +107,6 @@ const AddUpdateProduct = () => {
         setBehindFile(selectedFile);
     };
     const handleUploadChange = async (file) => {
-        console.log("file: AddUpdateProduct.js:56  handleUploadChange  file", file);
         if (imagesArray.length >= 60) {
             message.error("The maximum allowed number of images for upload is 60.");
 
@@ -159,6 +158,7 @@ const AddUpdateProduct = () => {
             } else {
                 for (let i = 0; i < imagesArray.length; i++) {
                     if (imagesArray[i].file) {
+                        console.log(`images ${i} ::`, imagesArray[i].file.originFileObj);
                         form_data.append(`subsidaryImages`, imagesArray[i].file.originFileObj);
                     }
                 }
