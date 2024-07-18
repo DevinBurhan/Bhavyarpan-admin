@@ -19,8 +19,9 @@ import {
 } from "../../redux/productMasterredux/actionCreator";
 import { getSubcategoriesAPI } from "../../redux/subcategoryredux/actionCreator";
 
-import "./Product.css";
 import { useNavigate } from "react-router-dom";
+import { reArrangeSequence } from "../../utility/commonFunction";
+import "./Product.css";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -37,6 +38,7 @@ const AddUpdateProduct = () => {
   const [isLoading, setIsLoading] = useState(false); //loadder
   const [value, setValue] = useState(false);
   const [imagesArray, setImagesArray] = useState([]);
+  console.log("🚀 ~ AddUpdateProduct ~ imagesArray:", imagesArray);
   const [mainImgPreview, setMainImgPreview] = useState();
   const [mainImgFile, setMainImgFile] = useState();
   const [behindImgPreview, setBehindImgPreview] = useState();
@@ -56,18 +58,15 @@ const AddUpdateProduct = () => {
     // console.log("file: AddUpdateProduct.js:45  useEffect  ID", ID.length);
     if (ID.length === 2) {
       let store = ID.pop();
-      console.log("file: AddUpdateProduct.js:46  useEffect  ID", store);
       setProductId(store);
       getApi(store);
     }
-    // console.log("file: AddUpdateProduct.js:42  useEffect  ID", ID);
     getCategoryList();
   }, []);
 
   const getApi = async (id) => {
     setIsLoading(true);
     let resp = await dispatch(getproductMasterDetailAPI(id));
-    console.log("file: AddUpdateProduct.js:56  getApi  resp", resp);
     if (resp) {
       let array = [];
       if (resp?.data?.subsidaryImages?.length > 0) {
@@ -125,29 +124,17 @@ const AddUpdateProduct = () => {
     setBehindFile(selectedFile);
   };
   const handleUploadChange = async (file) => {
-    console.log("file: AddUpdateProduct.js:56  handleUploadChange  file", file);
     if (imagesArray.length >= 60) {
       message.error("The maximum allowed number of images for upload is 60.");
 
       return false;
     }
-    // if (!checkFileType(file.file)) {
-    //     setUploadLoader(false);
-    //     return false;
-    // }
-    // const fileSize = file.file.size;
-    // const fileSizeInKB = fileSize / 1024;
-    // if (fileSizeInKB > 500) {
-    //     handleModal(true, "Size validation", "Images larger than 500KB will not be  uploaded.");
-    //     setUploadLoader(false);
-    //     return false;
-    // }
+
     let newImageTemp = imagesArray;
     let obj = {};
     obj.src = await getBase64(file.file.originFileObj);
     obj.id = file.file.uid;
     obj.file = file.file;
-    console.log("objobj", obj);
     newImageTemp.push(obj);
     setImagesArray(newImageTemp);
 
@@ -155,11 +142,17 @@ const AddUpdateProduct = () => {
       setRender(!render);
     }, 1000);
   };
+
+  const handleRemoveClick = (myIndex) => {
+    let newArray = reArrangeSequence(myIndex, imagesArray);
+    setImagesArray(newArray);
+    setRender(!render);
+  };
+
   const handleFinish = async (values) => {
     const form_data = new FormData();
     delete values.mainImage;
     delete values.behindImage;
-
     if (mainImgFile) {
       form_data.append("mainImage", mainImgFile);
     }
@@ -272,10 +265,13 @@ const AddUpdateProduct = () => {
       </Row>
       <Form
         form={form}
-        initialValues={{ remember: true }}
-        autoComplete="off"
         onFinish={handleFinish}
         layout="vertical"
+        scrollToFirstError={{
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        }}
       >
         <Row gutter={[20, 0]}>
           <Col span={24} md={18}>
@@ -574,59 +570,74 @@ const AddUpdateProduct = () => {
           <Col span={24}>
             <div className="upload-box">
               <Upload
-                // beforeUpload={beforeUpload}
-
                 className="upload-button"
                 onChange={handleUploadChange}
                 fileList={imagesArray}
                 multiple
               >
-                <button>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="feather feather-upload"
-                  >
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                  </svg>{" "}
-                  Upload Image
-                </button>
+                <Button>Upload Image</Button>
               </Upload>
             </div>
             <div className="upload-list">
               <Row gutter={[20, 20]}>
                 {imagesArray.map((item, index) => (
                   <Col span={4} key={index}>
-                    <img
-                      src={item.src}
-                      alt="img"
-                      width={100}
-                      height={100}
-                      style={{
-                        background: "grey",
-                        borderRadius: "20px",
-                        width: "100%",
-                        height: "225px",
-                        float: "right",
-                        display: "flex",
-                        objectFit: "cover",
-                        marginTop: "10px",
-                        border: "1px solid black",
-                      }}
-                    />
+                    <div style={{ position: "relative" }}>
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "6px",
+                          right: "-5px",
+                        }}
+                        onClick={() => handleRemoveClick(index)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M12 22.5C17.799 22.5 22.5 17.799 22.5 12C22.5 6.20101 17.799 1.5 12 1.5C6.20101 1.5 1.5 6.20101 1.5 12C1.5 17.799 6.20101 22.5 12 22.5Z"
+                            fill="#ED5565"
+                          />
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M8.81797 15.8891L15.889 8.81809C16.084 8.62309 16.084 8.30609 15.889 8.11109C15.694 7.91609 15.377 7.91609 15.182 8.11109L8.11097 15.1821C7.91597 15.3771 7.91597 15.6941 8.11097 15.8891C8.30597 16.0841 8.62297 16.0841 8.81797 15.8891Z"
+                            fill="#F3F3F3"
+                          />
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M15.889 15.1821L8.81797 8.11109C8.62297 7.91609 8.30597 7.91609 8.11097 8.11109C7.91597 8.30609 7.91597 8.62309 8.11097 8.81809L15.182 15.8891C15.377 16.0841 15.694 16.0841 15.889 15.8891C16.084 15.6941 16.084 15.3771 15.889 15.1821Z"
+                            fill="#F3F3F3"
+                          />
+                        </svg>
+                      </div>
+                      <img
+                        src={item.src}
+                        alt="img"
+                        width={100}
+                        height={100}
+                        style={{
+                          background: "grey",
+                          borderRadius: "20px",
+                          width: "100%",
+                          height: "225px",
+                          float: "right",
+                          display: "flex",
+                          objectFit: "cover",
+                          marginTop: "10px",
+                          border: "1px solid black",
+                        }}
+                      />
+                    </div>
                   </Col>
                 ))}
               </Row>
-              <Row justify={"center"}>
+              <Row justify={"center"} style={{ marginTop: "25px" }}>
                 <Col>
                   <Button htmlType="submit" type="primary">
                     Submit

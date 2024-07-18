@@ -112,6 +112,21 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu, events }) => {
       </Menu.Item>
       <Menu.Item
         icon={!topMenu && <FeatherIcon icon="activity" />}
+        onClick={() => navigate(`/upload`)}
+        key="upload"
+      >
+        <NavLink
+          onClick={toggleCollapsed}
+          to={{
+            pathname: `/upload`,
+            pageName: "upload",
+          }}
+        >
+          upload Image
+        </NavLink>
+      </Menu.Item>
+      <Menu.Item
+        icon={!topMenu && <FeatherIcon icon="activity" />}
         onClick={() => navigate(`/banner`)}
         key="banner"
       >

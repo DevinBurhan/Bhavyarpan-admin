@@ -9,6 +9,7 @@ import CategoryPage from "../../container/category/category";
 import SubCategoryPage from "../../container/category/subcategory";
 import AddUpdateProduct from "../../container/productMaster/AddUpdateProduct";
 import ProductMasterPage from "../../container/productMaster/productMaster";
+import UploadPage from "../../container/Upload/Upload";
 
 const Admin = () => {
   return (
@@ -30,6 +31,7 @@ const Admin = () => {
           element={<AddUpdateProduct />}
         />
         <Route exact path={"/banner"} element={<BannerPage />} />
+        <Route exact path={"/upload"} element={<UploadPage />} />
       </Routes>
     </Suspense>
   );
