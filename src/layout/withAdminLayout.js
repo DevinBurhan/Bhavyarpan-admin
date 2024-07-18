@@ -1,22 +1,26 @@
 /* eslint-disable no-shadow */
-import React, { Component } from 'react';
-import { Layout, Button, Row, Col } from 'antd';
-import FeatherIcon from 'feather-icons-react';
-import { Link } from 'react-router-dom';
-import { Scrollbars } from 'react-custom-scrollbars';
-import { connect } from 'react-redux';
-import propTypes from 'prop-types';
-import MenueItems from './MenueItems';
-import { Div, TopMenuSearch } from './style';
+import React, { Component } from "react";
+import { Layout, Button, Row, Col } from "antd";
+import FeatherIcon from "feather-icons-react";
+import { Link } from "react-router-dom";
+// import { Scrollbars } from "react-custom-scrollbars";
+import { connect } from "react-redux";
+import propTypes from "prop-types";
+import MenueItems from "./MenueItems";
+import { Div, TopMenuSearch } from "./style";
 // import HeaderSearch from '../components/header-search/header-search';
-import AuthInfo from '../components/utilities/auth-info/info';
-import { changeRtlMode, changeLayoutMode, changeMenuMode } from '../redux/themeLayout/actionCreator';
+import AuthInfo from "../components/utilities/auth-info/info";
+import {
+  changeRtlMode,
+  changeLayoutMode,
+  changeMenuMode,
+} from "../redux/themeLayout/actionCreator";
 import Logo from "../static/img/google.png";
 // const { darkTheme } = require('../config/theme/themeVariables');
 
 const { Header, Footer, Sider, Content } = Layout;
 
-const ThemeLayout = WrappedComponent => {
+const ThemeLayout = (WrappedComponent) => {
   class LayoutComponent extends Component {
     constructor(props) {
       super(props);
@@ -30,12 +34,12 @@ const ThemeLayout = WrappedComponent => {
     }
 
     componentDidMount() {
-      window.addEventListener('resize', this.updateDimensions);
+      window.addEventListener("resize", this.updateDimensions);
       this.updateDimensions();
     }
 
     componentWillUnmount() {
-      window.removeEventListener('resize', this.updateDimensions);
+      window.removeEventListener("resize", this.updateDimensions);
     }
 
     updateDimensions() {
@@ -46,9 +50,16 @@ const ThemeLayout = WrappedComponent => {
 
     render() {
       const { collapsed, hide, searchHide, activeSearch } = this.state;
-      const { ChangeLayoutMode, rtl, changeRtl, changeLayout, topMenu, changeMenuMode } = this.props;
+      const {
+        ChangeLayoutMode,
+        rtl,
+        changeRtl,
+        changeLayout,
+        topMenu,
+        changeMenuMode,
+      } = this.props;
 
-      const left = !rtl ? 'left' : 'right';
+      const left = !rtl ? "left" : "right";
       const darkMode = ChangeLayoutMode;
       const toggleCollapsed = () => {
         this.setState({
@@ -77,7 +88,7 @@ const ThemeLayout = WrappedComponent => {
         });
       };
 
-      const handleSearchHide = e => {
+      const handleSearchHide = (e) => {
         e.preventDefault();
         this.setState({
           searchHide: !searchHide,
@@ -86,28 +97,28 @@ const ThemeLayout = WrappedComponent => {
       };
 
       const footerStyle = {
-        padding: '20px 30px 18px',
-        color: 'rgba(0, 0, 0, 0.65)',
-        fontSize: '14px',
-        background: 'rgba(255, 255, 255, .90)',
-        width: '100%',
-        boxShadow: '0 -5px 10px rgba(146,153,184, 0.05)',
+        padding: "20px 30px 18px",
+        color: "rgba(0, 0, 0, 0.65)",
+        fontSize: "14px",
+        background: "rgba(255, 255, 255, .90)",
+        width: "100%",
+        boxShadow: "0 -5px 10px rgba(146,153,184, 0.05)",
       };
 
       const SideBarStyle = {
-        margin: '63px 0 0 0',
-        padding: '15px 15px 55px 15px',
-        overflowY: 'auto',
-        height: '100vh',
-        position: 'fixed',
+        margin: "63px 0 0 0",
+        padding: "15px 15px 55px 15px",
+        overflowY: "auto",
+        height: "100vh",
+        position: "fixed",
         [left]: 0,
         zIndex: 998,
       };
 
       const renderView = ({ style, ...props }) => {
         const customStyle = {
-          marginRight: 'auto',
-          [rtl ? 'marginLeft' : 'marginRight']: '-17px',
+          marginRight: "auto",
+          [rtl ? "marginLeft" : "marginRight"]: "-17px",
         };
         return <div {...props} style={{ ...style, ...customStyle }} />;
       };
@@ -116,22 +127,22 @@ const ThemeLayout = WrappedComponent => {
         const { ChangeLayoutMode } = this.props;
         const thumbStyle = {
           borderRadius: 6,
-          backgroundColor: ChangeLayoutMode ? '#ffffff16' : '#F1F2F6',
-          [left]: '2px',
+          backgroundColor: ChangeLayoutMode ? "#ffffff16" : "#F1F2F6",
+          [left]: "2px",
         };
         return <div style={{ ...style, ...thumbStyle }} props={props} />;
       };
 
       const renderTrackVertical = () => {
         const thumbStyle = {
-          position: 'absolute',
-          width: '6px',
-          transition: 'opacity 200ms ease 0s',
+          position: "absolute",
+          width: "6px",
+          transition: "opacity 200ms ease 0s",
           opacity: 0,
-          [rtl ? 'left' : 'right']: '2px',
-          bottom: '2px',
-          top: '2px',
-          borderRadius: '3px',
+          [rtl ? "left" : "right"]: "2px",
+          bottom: "2px",
+          top: "2px",
+          borderRadius: "3px",
         };
         return <div style={thumbStyle} />;
       };
@@ -140,20 +151,20 @@ const ThemeLayout = WrappedComponent => {
         const { ChangeLayoutMode } = this.props;
         const thumbStyle = {
           borderRadius: 6,
-          backgroundColor: ChangeLayoutMode ? '#ffffff16' : '#F1F2F6',
+          backgroundColor: ChangeLayoutMode ? "#ffffff16" : "#F1F2F6",
         };
         return <div style={{ ...style, ...thumbStyle }} props={props} />;
       };
 
       const onRtlChange = () => {
-        const html = document.querySelector('html');
-        html.setAttribute('dir', 'rtl');
+        const html = document.querySelector("html");
+        html.setAttribute("dir", "rtl");
         changeRtl(true);
       };
 
       const onLtrChange = () => {
-        const html = document.querySelector('html');
-        html.setAttribute('dir', 'ltr');
+        const html = document.querySelector("html");
+        html.setAttribute("dir", "ltr");
         changeRtl(false);
       };
 
@@ -183,43 +194,63 @@ const ThemeLayout = WrappedComponent => {
       };
 
       return (
-        <Div darkMode={darkMode}>
+        <Div darkMode={"light"}>
           <Layout className="layout">
             <Header
               style={{
-                position: 'fixed',
-                width: '100%',
+                position: "fixed",
+                width: "100%",
                 top: 0,
-                [!rtl ? 'left' : 'right']: 0,
+                [!rtl ? "left" : "right"]: 0,
+                background: "white",
               }}
             >
               <Row>
-                <Col lg={!topMenu ? 4 : 3} sm={6} xs={12} className="align-center-v navbar-brand">
+                <Col
+                  lg={!topMenu ? 4 : 3}
+                  sm={6}
+                  xs={12}
+                  className="align-center-v navbar-brand"
+                >
                   {!topMenu || window.innerWidth <= 991 ? (
-                    <Button type="link" onClick={toggleCollapsed}>
-                      <img src={require(`../static/img/icon/${collapsed ? 'right.svg' : 'left.svg'}`)} alt="menu" />
+                    <Button
+                      type="link"
+                      onClick={toggleCollapsed}
+                      style={{ border: "none", background: "transparent" }}
+                    >
+                      <img
+                        src={require(`../static/img/icon/${
+                          collapsed ? "right.svg" : "left.svg"
+                        }`)}
+                        alt="menu"
+                      />
                     </Button>
                   ) : null}
                   <Link
                     style={{ color: "#5F63F2", fontWeight: "bold" }}
-                    className={topMenu && window.innerWidth > 991 ? 'striking-logo top-menu' : 'striking-logo'}
+                    className={
+                      topMenu && window.innerWidth > 991
+                        ? "striking-logo top-menu"
+                        : "striking-logo"
+                    }
                     to="/"
                   >
-
                     <img src={Logo} alt="" />
                   </Link>
                 </Col>
 
-                <Col lg={!topMenu ? 14 : 15} md={8} sm={0} xs={0}>
-
-                </Col>
+                <Col lg={!topMenu ? 14 : 15} md={8} sm={0} xs={0}></Col>
 
                 <Col lg={6} md={10} sm={0} xs={0}>
                   {topMenu && window.innerWidth > 991 ? (
                     <TopMenuSearch>
                       <div className="top-right-wrap d-flex">
                         <Link
-                          className={`${activeSearch ? 'search-toggle active' : 'search-toggle'}`}
+                          className={`${
+                            activeSearch
+                              ? "search-toggle active"
+                              : "search-toggle"
+                          }`}
                           onClick={() => {
                             toggleSearch();
                           }}
@@ -228,7 +259,13 @@ const ThemeLayout = WrappedComponent => {
                           <FeatherIcon icon="search" />
                           <FeatherIcon icon="x" />
                         </Link>
-                        <div className={`${activeSearch ? 'topMenu-search-form show' : 'topMenu-search-form'}`}>
+                        <div
+                          className={`${
+                            activeSearch
+                              ? "topMenu-search-form show"
+                              : "topMenu-search-form"
+                          }`}
+                        >
                           <form action="">
                             <span className="search-icon">
                               <FeatherIcon icon="search" />
@@ -247,8 +284,16 @@ const ThemeLayout = WrappedComponent => {
                 <Col md={0} sm={18} xs={12}>
                   <>
                     <div className="mobile-action">
-                      <Link className="btn-search" onClick={handleSearchHide} to="#">
-                        {searchHide ? <FeatherIcon icon="search" /> : <FeatherIcon icon="x" />}
+                      <Link
+                        className="btn-search"
+                        onClick={handleSearchHide}
+                        to="#"
+                      >
+                        {searchHide ? (
+                          <FeatherIcon icon="search" />
+                        ) : (
+                          <FeatherIcon icon="x" />
+                        )}
                       </Link>
                       <Link className="btn-auth" onClick={onShowHide} to="#">
                         <FeatherIcon icon="more-vertical" />
@@ -274,8 +319,13 @@ const ThemeLayout = WrappedComponent => {
             </div> */}
             <Layout>
               {!topMenu || window.innerWidth <= 991 ? (
-                <Sider width={280} style={SideBarStyle} collapsed={collapsed} theme={!darkMode ? 'light' : 'dark'}>
-                  <Scrollbars
+                <Sider
+                  width={280}
+                  style={SideBarStyle}
+                  collapsed={collapsed}
+                  theme={!darkMode ? "light" : "dark"}
+                >
+                  <div
                     className="custom-scrollbar"
                     autoHide
                     autoHideTimeout={500}
@@ -293,7 +343,7 @@ const ThemeLayout = WrappedComponent => {
                       darkMode={darkMode}
                       events={onEventChange}
                     />
-                  </Scrollbars>
+                  </div>
                 </Sider>
               ) : null}
               <Layout className="atbd-main-layout">
@@ -302,7 +352,12 @@ const ThemeLayout = WrappedComponent => {
                   <Footer className="admin-footer" style={footerStyle}>
                     <Row>
                       <Col md={12} xs={24}>
-                        <span style={{ color: "#5F63F2" }} className="admin-footer__copyright">2022 © React-boiler-plate</span>
+                        <span
+                          style={{ color: "#5F63F2" }}
+                          className="admin-footer__copyright"
+                        >
+                          2022 © React-boiler-plate
+                        </span>
                       </Col>
                     </Row>
                   </Footer>
@@ -315,7 +370,7 @@ const ThemeLayout = WrappedComponent => {
     }
   }
 
-  const mapStateToProps = state => {
+  const mapStateToProps = (state) => {
     return {
       ChangeLayoutMode: state.ChangeLayoutMode.data,
       rtl: state.ChangeLayoutMode.rtlData,
@@ -323,11 +378,11 @@ const ThemeLayout = WrappedComponent => {
     };
   };
 
-  const mapStateToDispatch = dispatch => {
+  const mapStateToDispatch = (dispatch) => {
     return {
-      changeRtl: rtl => dispatch(changeRtlMode(rtl)),
-      changeLayout: show => dispatch(changeLayoutMode(show)),
-      changeMenuMode: show => dispatch(changeMenuMode(show)),
+      changeRtl: (rtl) => dispatch(changeRtlMode(rtl)),
+      changeLayout: (show) => dispatch(changeLayoutMode(show)),
+      changeMenuMode: (show) => dispatch(changeMenuMode(show)),
     };
   };
 
