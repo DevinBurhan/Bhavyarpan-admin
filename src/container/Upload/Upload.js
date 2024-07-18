@@ -1,9 +1,21 @@
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Modal, Row, Space, Table } from "antd";
-import { Upload } from "feather-icons-react/build/IconComponents";
+import {
+  Button,
+  Col,
+  Form,
+  Image,
+  Modal,
+  Row,
+  Space,
+  Table,
+  Upload,
+  message,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
+  addImageUploadAPI,
   deleteImageUploadAPI,
   getImageUploadAPI,
 } from "../../redux/uploadredux/actionCreator";
@@ -20,6 +32,7 @@ const getBase64 = (file) =>
 const UploadPage = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,9 +71,10 @@ const UploadPage = () => {
       title: "Are you sure you want to delete this Image",
       onOk: async () => {
         if (record._id) {
-          let resp = await dispatch(
-            deleteImageUploadAPI({ ids: [record._id] })
-          );
+          let params = {
+            [`ids[0]`]: record._id,
+          };
+          let resp = await dispatch(deleteImageUploadAPI(params));
           if (resp) {
             getApi(true, page, limit);
           }
@@ -69,7 +83,37 @@ const UploadPage = () => {
     });
   };
 
-  const handleFinish = async (values) => {};
+  const handleFinish = async () => {
+    const form_data = new FormData();
+    if (imagesArray !== "" && imagesArray.length > 0) {
+      if (imagesArray.length === 1) {
+        if (imagesArray[0].src) {
+          form_data.append(
+            `image`,
+            ...[
+              imagesArray[0].file.originFileObj
+                ? imagesArray[0].file.originFileObj
+                : imagesArray[0].file,
+            ]
+          );
+        }
+      } else {
+        for (let i = 0; i < imagesArray.length; i++) {
+          if (imagesArray[i].file) {
+            form_data.append(`image`, imagesArray[i].file.originFileObj);
+          }
+        }
+      }
+    } else {
+      message.error("Pleasen add atleast one image");
+    }
+
+    const resp = await dispatch(addImageUploadAPI(form_data));
+    if (resp) {
+      setIsModalOpen(false);
+      getApi(true, page, limit);
+    }
+  };
 
   const handleChangeMediaLarge = (selectedFile) => {
     if (!selectedFile) return;
@@ -91,10 +135,10 @@ const UploadPage = () => {
     },
     {
       title: " Image",
-      dataIndex: "image",
+      dataIndex: "imageUrl",
       key: "Image",
       render: (src) => (
-        <img
+        <Image
           src={src}
           alt="Image"
           style={{ width: 150, height: "auto", objectFit: "cover" }}
@@ -107,35 +151,6 @@ const UploadPage = () => {
       key: "URL",
       render: (src) => <spna>{src}</spna>,
     },
-    // {
-    //   title: "Description",
-    //   dataIndex: "description",
-    //   key: "description",
-    // },
-    // {
-    //   title: "Large Image",
-    //   dataIndex: "largeImage",
-    //   key: "largeImage",
-    //   render: (text) => (
-    //     <img
-    //       src={text}
-    //       alt="Large"
-    //       style={{ width: 150, height: "auto", objectFit: "cover" }}
-    //     />
-    //   ),
-    // },
-    // {
-    //   title: "Small Image",
-    //   dataIndex: "smallImage",
-    //   key: "smallImage",
-    //   render: (text) => (
-    //     <img
-    //       src={text}
-    //       alt="Small"
-    //       style={{ width: 150, height: "auto", objectFit: "cover" }}
-    //     />
-    //   ),
-    // },
 
     {
       title: "Action",
@@ -209,108 +224,24 @@ const UploadPage = () => {
           </Row>
         </Col>
       </Row>
-
       <Table
         dataSource={data && data.data ? data.data : []}
         columns={columns}
         loading={isLoading}
       />
-
-      {setIsModalOpen && (
-        <Row justify={"center"}>
-          <Col span={6}>
-            <div className="upload-box">
-              <Upload
-                className="upload-button"
-                onChange={handleUploadChange}
-                fileList={imagesArray}
-                multiple
-              >
-                <Button>Upload Image</Button>
-              </Upload>
-            </div>
-            <div className="upload-list">
-              <Row gutter={[20, 20]}>
-                {imagesArray.map((item, index) => (
-                  <Col span={4} key={index}>
-                    <div style={{ position: "relative" }}>
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "6px",
-                          right: "-5px",
-                        }}
-                        onClick={() => handleRemoveClick(index)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M12 22.5C17.799 22.5 22.5 17.799 22.5 12C22.5 6.20101 17.799 1.5 12 1.5C6.20101 1.5 1.5 6.20101 1.5 12C1.5 17.799 6.20101 22.5 12 22.5Z"
-                            fill="#ED5565"
-                          />
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M8.81797 15.8891L15.889 8.81809C16.084 8.62309 16.084 8.30609 15.889 8.11109C15.694 7.91609 15.377 7.91609 15.182 8.11109L8.11097 15.1821C7.91597 15.3771 7.91597 15.6941 8.11097 15.8891C8.30597 16.0841 8.62297 16.0841 8.81797 15.8891Z"
-                            fill="#F3F3F3"
-                          />
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M15.889 15.1821L8.81797 8.11109C8.62297 7.91609 8.30597 7.91609 8.11097 8.11109C7.91597 8.30609 7.91597 8.62309 8.11097 8.81809L15.182 15.8891C15.377 16.0841 15.694 16.0841 15.889 15.8891C16.084 15.6941 16.084 15.3771 15.889 15.1821Z"
-                            fill="#F3F3F3"
-                          />
-                        </svg>
-                      </div>
-                      <img
-                        src={item.src}
-                        alt="img"
-                        width={100}
-                        height={100}
-                        style={{
-                          background: "grey",
-                          borderRadius: "20px",
-                          width: "100%",
-                          height: "225px",
-                          float: "right",
-                          display: "flex",
-                          objectFit: "cover",
-                          marginTop: "10px",
-                          border: "1px solid black",
-                        }}
-                      />
-                    </div>
-                  </Col>
-                ))}
-              </Row>
-              <Row justify={"center"} style={{ marginTop: "25px" }}>
-                <Col>
-                  <Button htmlType="submit" type="primary">
-                    Submit
-                  </Button>
-                </Col>
-              </Row>
-            </div>
-          </Col>
-        </Row>
-      )}
-      {/* <Modal
+      <Modal
+        width={"70%"}
         title={modalTitle}
         open={isModalOpen}
         onCancel={handleCancel}
-        onOk={form.submit}
+        onOk={handleFinish}
         destroyOnClose
         okText="Submit"
         cancelText="Cancel"
         confirmLoading={isLoading}
       >
-        <Row>
-          <Col span={24}>
+        <Row justify={"center"}>
+          <Col span={4}>
             <div className="upload-box">
               <Upload
                 className="upload-button"
@@ -324,31 +255,66 @@ const UploadPage = () => {
           </Col>
         </Row>
         <div className="upload-list">
-          <Row gutter={[20, 20]}>
+          <Row gutter={[20, 20]} justify={"center"}>
             {imagesArray.map((item, index) => (
               <Col span={4} key={index}>
-                <img
-                  src={item.src}
-                  alt="img"
-                  width={100}
-                  height={100}
-                  style={{
-                    background: "grey",
-                    borderRadius: "20px",
-                    width: "100%",
-                    height: "225px",
-                    float: "right",
-                    display: "flex",
-                    objectFit: "cover",
-                    marginTop: "10px",
-                    border: "1px solid black",
-                  }}
-                />
+                <div style={{ position: "relative" }}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "6px",
+                      right: "-5px",
+                    }}
+                    onClick={() => handleRemoveClick(index)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M12 22.5C17.799 22.5 22.5 17.799 22.5 12C22.5 6.20101 17.799 1.5 12 1.5C6.20101 1.5 1.5 6.20101 1.5 12C1.5 17.799 6.20101 22.5 12 22.5Z"
+                        fill="#ED5565"
+                      />
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M8.81797 15.8891L15.889 8.81809C16.084 8.62309 16.084 8.30609 15.889 8.11109C15.694 7.91609 15.377 7.91609 15.182 8.11109L8.11097 15.1821C7.91597 15.3771 7.91597 15.6941 8.11097 15.8891C8.30597 16.0841 8.62297 16.0841 8.81797 15.8891Z"
+                        fill="#F3F3F3"
+                      />
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M15.889 15.1821L8.81797 8.11109C8.62297 7.91609 8.30597 7.91609 8.11097 8.11109C7.91597 8.30609 7.91597 8.62309 8.11097 8.81809L15.182 15.8891C15.377 16.0841 15.694 16.0841 15.889 15.8891C16.084 15.6941 16.084 15.3771 15.889 15.1821Z"
+                        fill="#F3F3F3"
+                      />
+                    </svg>
+                  </div>
+                  <img
+                    src={item.src}
+                    alt="img"
+                    width={100}
+                    height={100}
+                    style={{
+                      background: "grey",
+                      borderRadius: "20px",
+                      width: "100%",
+                      height: "175px",
+                      float: "right",
+                      display: "flex",
+                      objectFit: "cover",
+                      marginTop: "10px",
+                      border: "1px solid black",
+                    }}
+                  />
+                </div>
               </Col>
             ))}
           </Row>
         </div>
-      </Modal> */}
+      </Modal>{" "}
     </div>
   );
 };

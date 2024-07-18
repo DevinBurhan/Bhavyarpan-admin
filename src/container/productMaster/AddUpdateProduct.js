@@ -125,7 +125,7 @@ const AddUpdateProduct = () => {
   };
   const handleUploadChange = async (file) => {
     if (imagesArray.length >= 60) {
-      message.error("The maximum allowed number of images for upload is 60.");
+      message.error("The maximum allowed number of images for upload is 10.");
 
       return false;
     }
@@ -219,8 +219,8 @@ const AddUpdateProduct = () => {
 
       const resp = await dispatch(updateproductMasterAPI(productId, form_data));
       if (resp) {
+        navigate("/productMaster");
         form.resetFields();
-        getApi(productId);
       }
     } else if (!productId) {
       const appendValues = (obj, prefix = "") => {
@@ -253,6 +253,10 @@ const AddUpdateProduct = () => {
       }
 
       const resp = await dispatch(addproductMasterAPI(form_data));
+      if (resp) {
+        navigate("/productMaster");
+        form.resetFields();
+      }
     }
   };
 
