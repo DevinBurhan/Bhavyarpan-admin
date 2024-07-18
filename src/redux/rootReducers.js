@@ -5,17 +5,19 @@ import categoryReducer from "./categoryredux/reducers";
 import subcategoryReducer from "./subcategoryredux/reducers";
 import productMasterReducer from "./productMasterredux/reducers";
 import bannerReducer from "./bannerredux/reducers";
+import uploadReducer from "./uploadredux/reducers";
 
 import advertismentReducer from "./advertismentredux/reducers";
 
 const rootReducers = combineReducers({
-    auth: authReducer,
-    ChangeLayoutMode,
-    categoryReducer: categoryReducer,
-    subcategoryReducer: subcategoryReducer,
-    productMasterReducer: productMasterReducer,
-    bannerReducer: bannerReducer,
-    advertismentReducer: advertismentReducer,
+  auth: authReducer,
+  ChangeLayoutMode,
+  categoryReducer: categoryReducer,
+  subcategoryReducer: subcategoryReducer,
+  productMasterReducer: productMasterReducer,
+  bannerReducer: bannerReducer,
+  advertismentReducer: advertismentReducer,
+  uploadReducer,
 });
 
 export default rootReducers;

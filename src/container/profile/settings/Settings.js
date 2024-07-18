@@ -1,24 +1,24 @@
-import React, { lazy, Suspense } from 'react';
-import { Row, Col, Skeleton } from 'antd';
-import FeatherIcon from 'feather-icons-react';
-import { Switch, Route } from 'react-router-dom';
-import propTypes from 'prop-types';
-import { SettingWrapper } from './overview/style';
-import { PageHeader } from '../../../components/page-headers/page-headers';
-import { Main } from '../../styled';
-import { Cards } from '../../../components/cards/frame/cards-frame';
-import { Button } from '../../../components/buttons/buttons';
-import { ShareButtonPageHeader } from '../../../components/buttons/share-button/share-button';
-import { ExportButtonPageHeader } from '../../../components/buttons/export-button/export-button';
-import { CalendarButtonPageHeader } from '../../../components/buttons/calendar-button/calendar-button';
+import { Col, Row, Skeleton } from "antd";
+import FeatherIcon from "feather-icons-react";
+import propTypes from "prop-types";
+import React, { Suspense, lazy } from "react";
+import { Route, Routes } from "react-router-dom";
+import { Button } from "../../../components/buttons/buttons";
+import { CalendarButtonPageHeader } from "../../../components/buttons/calendar-button/calendar-button";
+import { ExportButtonPageHeader } from "../../../components/buttons/export-button/export-button";
+import { ShareButtonPageHeader } from "../../../components/buttons/share-button/share-button";
+import { Cards } from "../../../components/cards/frame/cards-frame";
+import { PageHeader } from "../../../components/page-headers/page-headers";
+import { Main } from "../../styled";
+import { SettingWrapper } from "./overview/style";
 
-const Profile = lazy(() => import('./overview/Profile'));
-const Account = lazy(() => import('./overview/Account'));
-const Password = lazy(() => import('./overview/Passwoard'));
-const SocialProfiles = lazy(() => import('./overview/SocialProfile'));
-const Notification = lazy(() => import('./overview/Notification'));
-const AuthorBox = lazy(() => import('./overview/ProfileAuthorBox'));
-const CoverSection = lazy(() => import('../overview/CoverSection'));
+const Profile = lazy(() => import("./overview/Profile"));
+const Account = lazy(() => import("./overview/Account"));
+const Password = lazy(() => import("./overview/Passwoard"));
+const SocialProfiles = lazy(() => import("./overview/SocialProfile"));
+const Notification = lazy(() => import("./overview/Notification"));
+const AuthorBox = lazy(() => import("./overview/ProfileAuthorBox"));
+const CoverSection = lazy(() => import("../overview/CoverSection"));
 
 const Settings = ({ match }) => {
   const { path } = match;
@@ -65,7 +65,7 @@ const Settings = ({ match }) => {
               >
                 <CoverSection />
               </Suspense>
-              <Switch>
+              <Routes>
                 <Suspense
                   fallback={
                     <Cards headless>
@@ -73,14 +73,17 @@ const Settings = ({ match }) => {
                     </Cards>
                   }
                 >
-                  <Route exact path={`${path}`} component={Profile} />
-                  <Route exact path={`${path}/profile`} component={Profile} />
-                  <Route exact path={`${path}/account`} component={Account} />
-                  <Route exact path={`${path}/password`} component={Password} />
-                  <Route exact path={`${path}/social`} component={SocialProfiles} />
-                  <Route exact path={`${path}/notification`} component={Notification} />
+                  <Route exact path={`/profile`} component={Profile} />
+                  <Route exact path={`/account`} component={Account} />
+                  <Route exact path={`/password`} component={Password} />
+                  <Route exact path={`/social`} component={SocialProfiles} />
+                  <Route
+                    exact
+                    path={`/notification`}
+                    component={Notification}
+                  />
                 </Suspense>
-              </Switch>
+              </Routes>
             </SettingWrapper>
           </Col>
         </Row>
