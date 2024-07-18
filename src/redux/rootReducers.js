@@ -6,6 +6,8 @@ import subcategoryReducer from "./subcategoryredux/reducers";
 import productMasterReducer from "./productMasterredux/reducers";
 import bannerReducer from "./bannerredux/reducers";
 
+import advertismentReducer from "./advertismentredux/reducers";
+
 const rootReducers = combineReducers({
     auth: authReducer,
     ChangeLayoutMode,
@@ -13,6 +15,7 @@ const rootReducers = combineReducers({
     subcategoryReducer: subcategoryReducer,
     productMasterReducer: productMasterReducer,
     bannerReducer: bannerReducer,
+    advertismentReducer: advertismentReducer,
 });
 
 export default rootReducers;

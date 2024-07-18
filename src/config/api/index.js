@@ -33,6 +33,12 @@ const API = {
         update: "banner/",
         delete: "banner/",
     },
+    advertisment: {
+        get: "ads/list",
+        add: "ads/create",
+        update: "ads/",
+        delete: "ads/",
+    },
 };
 
 export { API };

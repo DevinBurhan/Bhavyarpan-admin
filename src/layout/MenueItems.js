@@ -63,6 +63,11 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu, events }) => {
                     Banner
                 </NavLink>
             </Menu.Item>
+            <Menu.Item icon={!topMenu && <FeatherIcon icon="activity" />} key="advertisment">
+                <NavLink onClick={toggleCollapsed} to={`/advertisment`}>
+                    Advertisement
+                </NavLink>
+            </Menu.Item>
         </Menu>
     );
 };
