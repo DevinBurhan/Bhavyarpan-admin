@@ -1,33 +1,40 @@
-import React, { lazy, Suspense } from "react";
 import { Spin } from "antd";
-import { Switch, Route, Redirect } from "react-router-dom";
+import React, { lazy, Suspense } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import AuthLayout from "../container/profile/authentication/Index";
 
-const Login = lazy(() => import("../container/profile/authentication/overview/SignIn"));
-const SignUp = lazy(() => import("../container/profile/authentication/overview/Signup"));
-const ForgotPass = lazy(() => import("../container/profile/authentication/overview/ForgotPassword"));
+const Login = lazy(() =>
+  import("../container/profile/authentication/overview/SignIn")
+);
+const SignUp = lazy(() =>
+  import("../container/profile/authentication/overview/Signup")
+);
+const ForgotPass = lazy(() =>
+  import("../container/profile/authentication/overview/ForgotPassword")
+);
 
 const NotFound = () => {
-    return <Redirect to="/" />;
+  return <Navigate to="/" />;
 };
 
 const FrontendRoutes = () => {
-    return (
-        <Switch>
-            <Suspense
-                fallback={
-                    <div className="spin">
-                        <Spin />
-                    </div>
-                }
-            >
-                <Route exact path="/forgotPassword" component={ForgotPass} />
-                <Route exact path="/register" component={SignUp} />
-                <Route exact path="/" component={Login} />
-                <Route exact path="*" component={NotFound} />
-            </Suspense>
-        </Switch>
-    );
+  return (
+    <Suspense
+      fallback={
+        <div className="spin">
+          <Spin />
+        </div>
+      }
+    >
+      <Routes>
+        <Route exact path="/" element={<Login />} />
+        <Route exact path="/forgotPassword" element={<ForgotPass />} />
+        <Route exact path="/register" element={<SignUp />} />
+
+        <Route exact path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
+  );
 };
 
 export default AuthLayout(FrontendRoutes);

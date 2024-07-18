@@ -10,9 +10,17 @@ const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutEr
 const login = (payload) => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.post(API.auth.login, payload);
+            console.log("payloadpayload", payload);
+
+            const resp = await DataService.post(API.auth.login, payload, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
             console.log("resp", resp);
             if (resp?.data?.status) {
+                console.log("file: actionCreator.js:14  return  resp", resp);
                 dispatch(loginBegin());
                 setTimeout(() => {
                     setItem("access_token", resp.data.data.token);

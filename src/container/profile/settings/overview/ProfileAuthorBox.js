@@ -1,21 +1,19 @@
-import React from 'react';
-import { Upload } from 'antd';
-import FeatherIcon from 'feather-icons-react';
-import { Link, NavLink, useRouteMatch } from 'react-router-dom';
-import propTypes from 'prop-types';
-import { ProfileAuthorBox } from './style';
-import Heading from '../../../../components/heading/heading';
-import { Cards } from '../../../../components/cards/frame/cards-frame';
+import { Upload } from "antd";
+import FeatherIcon from "feather-icons-react";
+import propTypes from "prop-types";
+import React from "react";
+import { Link, NavLink } from "react-router-dom";
+import { Cards } from "../../../../components/cards/frame/cards-frame";
+import Heading from "../../../../components/heading/heading";
+import { ProfileAuthorBox } from "./style";
 
 const AuthorBox = () => {
-  const { path } = useRouteMatch();
-
   return (
     <ProfileAuthorBox>
       <Cards headless>
         <div className="author-info">
           <figure>
-            <img src={require('../../../../static/img/users/1.png')} alt="" />
+            <img src={require("../../../../static/img/users/1.png")} alt="" />
 
             <Upload>
               <Link to="#">
@@ -33,19 +31,19 @@ const AuthorBox = () => {
         <nav className="settings-menmulist">
           <ul>
             <li>
-              <NavLink to={`${path}/profile`}>
+              <NavLink to={`/profile`}>
                 <FeatherIcon icon="user" size={14} />
                 Edit Profile
               </NavLink>
             </li>
             <li>
-              <NavLink to={`${path}/account`}>
+              <NavLink to={`/account`}>
                 <FeatherIcon icon="settings" size={14} />
                 Account Settings
               </NavLink>
             </li>
             <li>
-              <NavLink to={`${path}/password`}>
+              <NavLink to={`/password`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="14"
@@ -64,13 +62,13 @@ const AuthorBox = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to={`${path}/social`}>
+              <NavLink to={`/social`}>
                 <FeatherIcon icon="users" size={14} />
                 Social Profile
               </NavLink>
             </li>
             <li>
-              <NavLink to={`${path}/notification`}>
+              <NavLink to={`/notification`}>
                 <FeatherIcon icon="bell" size={14} />
                 Notification
               </NavLink>

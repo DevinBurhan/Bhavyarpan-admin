@@ -2,83 +2,83 @@ import { message } from "antd";
 import { API } from "../../config/api";
 import { DataService } from "../../config/dataService/dataService";
 import actions from "./action";
-import { paramsToQueryString } from "../../utility/commonFunction";
 
-const { getCategory, addCategory, updateCategory, deleteCategory } = actions;
+const { getBanner, addBanner, bannerErr, updateBanner, deleteBanner } = actions;
 
-export const getCategoiryAPI = (params) => {
+export const getBannerAPI = () => {
     return async (dispatch) => {
         try {
-            let queryString = paramsToQueryString(params);
-            const resp = await DataService.get(API.category.get + queryString);
-            if (resp.data.message) {
-                dispatch(getCategory(resp.data));
-
+            const resp = await DataService.get(API.banner.get);
+            console.log("action creator resp", resp);
+            if (resp.data.status) {
+                dispatch(getBanner(resp.data));
+                // message.success(resp.data.message);
                 return true;
             } else {
                 return false;
             }
         } catch (err) {
-            message.error("Failed to fetch categories");
+            console.log("file: actionCreator.js:21  return  err", err);
+            message.error("Failed to fetch banners");
             return false;
         }
     };
 };
 
-export const addCategoiryAPI = (payload) => {
+export const addBannerAPI = (payload) => {
     return async (dispatch) => {
         try {
-            console.log("resp", API.category.add);
-            const resp = await DataService.post(API.category.add, payload);
-            // console.log("resp", resp);
+            // console.log("resp", API.banner.add);
+            const resp = await DataService.post(API.banner.add, payload);
+            console.log("addresp", resp);
             if (resp.data.status) {
-                dispatch(addCategory(resp.data));
                 message.success(resp.data.message);
                 return true;
             } else {
                 return false;
             }
         } catch (err) {
-            message.error("Failed to add categories");
+            message.error("Failed to add banners");
             return false;
         }
     };
 };
 
-export const updateCategoiryAPI = (categoryId, payload) => {
+export const updateBannerAPI = (bannerId, payload) => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.put(API.category.update + categoryId, payload);
+            const resp = await DataService.put(API.banner.update + bannerId, payload);
 
             if (resp.data.status) {
-                dispatch(updateCategory(resp.data));
+                console.log("file: actionCreator.js:51  return  resp", resp.data.message);
                 message.success(resp.data.message);
+                dispatch(updateBanner(resp.data));
                 return true;
             } else {
                 message.error(resp.data.message);
                 return false;
             }
         } catch (error) {
+            console.log("file: actionCreator.js:62  return  error", error);
             return false;
         }
     };
 };
 
-export const deleteCategoiryAPI = (categoryId) => {
+export const deleteBannerAPI = (bannerId) => {
     return async (dispatch) => {
         try {
-            console.log("skjdfgjsdgbfhjsfdgjhfsd", categoryId);
-            const resp = await DataService.delete(API.category.delete + categoryId);
+            console.log("skjdfgjsdgbfhjsfdgjhfsd", bannerId);
+            const resp = await DataService.delete(API.banner.delete + bannerId);
             console.log("resp", resp);
             if (resp.data.status) {
-                // dispatch(deleteCategory(resp.data));
                 message.success(resp.data.message);
                 return true;
             } else {
                 return false;
             }
         } catch (err) {
-            message.error("Failed to delete categories");
+            message.error("Failed to delete banners");
             return false;
         }
     };

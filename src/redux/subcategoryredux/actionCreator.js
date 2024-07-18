@@ -1,19 +1,18 @@
-import { message } from "antd";
+import { Pagination, message } from "antd";
 import { API } from "../../config/api";
 import { DataService } from "../../config/dataService/dataService";
 import actions from "./action";
 import { paramsToQueryString } from "../../utility/commonFunction";
 
-const { getCategory, addCategory, updateCategory, deleteCategory } = actions;
+const { getSubcategory, addSubcategory, updateSubcategory } = actions;
 
-export const getCategoiryAPI = (params) => {
+export const getSubcategoriesAPI = (params) => {
     return async (dispatch) => {
         try {
             let queryString = paramsToQueryString(params);
-            const resp = await DataService.get(API.category.get + queryString);
-            if (resp.data.message) {
-                dispatch(getCategory(resp.data));
-
+            const resp = await DataService.get(API.subCategory.get + queryString);
+            if (resp.data.status) {
+                dispatch(getSubcategory(resp.data));
                 return true;
             } else {
                 return false;
@@ -24,34 +23,31 @@ export const getCategoiryAPI = (params) => {
         }
     };
 };
-
-export const addCategoiryAPI = (payload) => {
+export const addSubcategoryAPI = (payload) => {
     return async (dispatch) => {
         try {
-            console.log("resp", API.category.add);
-            const resp = await DataService.post(API.category.add, payload);
-            // console.log("resp", resp);
+            const resp = await DataService.post(API.subCategory.add, payload);
             if (resp.data.status) {
-                dispatch(addCategory(resp.data));
+                dispatch(addSubcategory(resp.data));
                 message.success(resp.data.message);
                 return true;
             } else {
                 return false;
             }
         } catch (err) {
-            message.error("Failed to add categories");
+            message.error("Failed to add subcategories");
             return false;
         }
     };
 };
 
-export const updateCategoiryAPI = (categoryId, payload) => {
+export const updateSubcategoryAPI = (categoryId, payload) => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.put(API.category.update + categoryId, payload);
+            const resp = await DataService.put(API.subCategory.update + categoryId, payload);
 
             if (resp.data.status) {
-                dispatch(updateCategory(resp.data));
+                dispatch(updateSubcategory(resp.data));
                 message.success(resp.data.message);
                 return true;
             } else {
@@ -64,21 +60,19 @@ export const updateCategoiryAPI = (categoryId, payload) => {
     };
 };
 
-export const deleteCategoiryAPI = (categoryId) => {
+export const deleteSubcategoryAPI = (Id) => {
     return async (dispatch) => {
         try {
-            console.log("skjdfgjsdgbfhjsfdgjhfsd", categoryId);
-            const resp = await DataService.delete(API.category.delete + categoryId);
+            const resp = await DataService.delete(API.subCategory.delete + Id);
             console.log("resp", resp);
             if (resp.data.status) {
-                // dispatch(deleteCategory(resp.data));
                 message.success(resp.data.message);
                 return true;
             } else {
                 return false;
             }
         } catch (err) {
-            message.error("Failed to delete categories");
+            message.error("Failed to delete subcategories");
             return false;
         }
     };

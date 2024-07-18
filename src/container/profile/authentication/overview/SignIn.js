@@ -1,65 +1,80 @@
-import React, { useCallback } from "react";
-import { NavLink, useHistory } from "react-router-dom";
-import { Form, Input, Button } from "antd";
+import { Button, Form, Input } from "antd";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AuthWrapper } from "./style";
-import { login } from "../../../../redux/authentication/actionCreator";
+import { NavLink, useNavigate } from "react-router-dom";
 import Heading from "../../../../components/heading/heading";
-import { Checkbox } from "../../../../components/checkbox/checkbox";
+import { login } from "../../../../redux/authentication/actionCreator";
+import { AuthWrapper } from "./style";
 
 const SignIn = () => {
-    const history = useHistory();
-    const dispatch = useDispatch();
-    const isLoading = useSelector((state) => state.auth.loading);
-    const [form] = Form.useForm();
+  const navigate = useNavigate();
 
-    const handleSubmit = async (value) => {
-        let resp = await dispatch(login(value));
-        if (resp) {
-            history.push("/admin");
-        }
-    };
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.auth.loading);
+  const [form] = Form.useForm();
 
-    return (
-        <AuthWrapper>
-            <p className="auth-notice">
-                Don&rsquo;t have an account? <NavLink to="/register">Sign up now</NavLink>
-            </p>
-            <div className="auth-contents">
-                <Form name="login" form={form} onFinish={handleSubmit} layout="vertical">
-                    <Heading as="h3">
-                        Sign in to <span className="color-secondary">Vendor</span>
-                    </Heading>
-                    <Form.Item
-                        name="email"
-                        rules={[
-                            {
-                                message: "Please input your Email!",
-                                required: true,
-                            },
-                        ]}
-                        initialValue="name@example.com"
-                        label="Username or Email Address"
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="password" initialValue="123456" label="Password">
-                        <Input.Password placeholder="Password" />
-                    </Form.Item>
-                    <div className="auth-form-action">
-                        <NavLink className="forgot-pass-link" to="/forgotPassword">
-                            Forgot password?
-                        </NavLink>
-                    </div>
-                    <Form.Item>
-                        <Button className="btn-signin" htmlType="submit" type="primary" size="large">
-                            {isLoading ? "Loading..." : "Log In"}
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-        </AuthWrapper>
-    );
+  const handleSubmit = async (value) => {
+    // const form_data = new FormData();
+    // form_data.append("email", value.email);
+    // form_data.append("password", value.password);
+    let resp = await dispatch(login(value));
+    if (resp) {
+      navigate("/admin");
+    }
+  };
+  console.log("sdkfhjksdbfsdb");
+
+  return (
+    <AuthWrapper>
+      <p className="auth-notice">
+        Don&rsquo;t have an account?{" "}
+        <NavLink to="/register">Sign up now</NavLink>
+      </p>
+      <div className="auth-contents">
+        <Form
+          name="login"
+          form={form}
+          onFinish={handleSubmit}
+          layout="vertical"
+        >
+          <Heading as="h3">
+            Sign in to <span className="color-secondary">Vendor</span>
+          </Heading>
+          <Form.Item
+            name="email"
+            rules={[
+              {
+                message: "Please input your Email!",
+                required: true,
+              },
+            ]}
+            initialValue="name@example.com"
+            label="Username or Email Address"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item name="password" initialValue="123456" label="Password">
+            <Input.Password placeholder="Password" />
+          </Form.Item>
+          <div className="auth-form-action">
+            <NavLink className="forgot-pass-link" to="/forgotPassword">
+              Forgot password?
+            </NavLink>
+          </div>
+          <Form.Item>
+            <Button
+              className="btn-signin"
+              htmlType="submit"
+              type="primary"
+              size="large"
+            >
+              {isLoading ? "Loading..." : "Log In"}
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </AuthWrapper>
+  );
 };
 
 export default SignIn;

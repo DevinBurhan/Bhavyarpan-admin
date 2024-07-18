@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { hot } from "react-hot-loader/root";
 import { Provider, useSelector } from "react-redux";
 import { ThemeProvider } from "styled-components";
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import { BrowserRouter as Router, Navigate, Route } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import store from "./redux/store";
 import Admin from "./routes/admin";
@@ -14,43 +13,48 @@ import ProtectedRoute from "./components/utilities/protectedRoute";
 const { theme } = config;
 
 const ProviderConfig = () => {
-    const { rtl, isLoggedIn, topMenu, darkMode } = useSelector((state) => {
-        return {
-            darkMode: state.ChangeLayoutMode.data,
-            rtl: state.ChangeLayoutMode.rtlData,
-            topMenu: state.ChangeLayoutMode.topMenu,
-            isLoggedIn: state.auth.login,
-        };
-    });
+  const { rtl, isLoggedIn, topMenu, darkMode } = useSelector((state) => {
+    return {
+      darkMode: state.ChangeLayoutMode.data,
+      rtl: state.ChangeLayoutMode.rtlData,
+      topMenu: state.ChangeLayoutMode.topMenu,
+      isLoggedIn: state.auth.login,
+    };
+  });
 
-    const [path, setPath] = useState(window.location.pathname);
+  const [path, setPath] = useState(window.location.pathname);
+  console.log(
+    "🚀 ~ const{rtl,isLoggedIn,topMenu,darkMode}=useSelector ~ isLoggedIn:",
+    isLoggedIn
+  );
+  useEffect(() => {
+    let unmounted = false;
+    if (!unmounted) {
+      setPath(window.location.pathname);
+    }
+    return () => (unmounted = true);
+  }, [setPath]);
 
-    useEffect(() => {
-        let unmounted = false;
-        if (!unmounted) {
-            setPath(window.location.pathname);
-        }
-        return () => (unmounted = true);
-    }, [setPath]);
-
-    return (
-        <ConfigProvider direction={rtl ? "rtl" : "ltr"}>
-            <ThemeProvider theme={{ ...theme, rtl, topMenu, darkMode }}>
-                <Router basename={process.env.PUBLIC_URL}>
-                    {!isLoggedIn ? <Route path="/" component={Auth} /> : <ProtectedRoute path="/" component={Admin} />}
-                    {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && <Redirect to="/" />}
-                </Router>
-            </ThemeProvider>
-        </ConfigProvider>
-    );
+  return (
+    <ConfigProvider direction={rtl ? "rtl" : "ltr"}>
+      <ThemeProvider theme={{ ...theme, rtl, topMenu, darkMode }}>
+        <Router basename={process.env.PUBLIC_URL}>
+          {!isLoggedIn ? <Auth /> : <Admin />}
+          {/* {isLoggedIn &&
+            (path === process.env.PUBLIC_URL ||
+              path === `${process.env.PUBLIC_URL}/`) && <Navigate to="/" />} */}
+        </Router>
+      </ThemeProvider>
+    </ConfigProvider>
+  );
 };
 
 function App() {
-    return (
-        <Provider store={store}>
-            <ProviderConfig />
-        </Provider>
-    );
+  return (
+    <Provider store={store}>
+      <ProviderConfig />
+    </Provider>
+  );
 }
 
-export default hot(App);
+export default App;

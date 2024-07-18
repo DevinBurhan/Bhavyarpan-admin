@@ -1,16 +1,16 @@
-import React from 'react';
-import { Badge } from 'antd';
-import FeatherIcon from 'feather-icons-react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { Scrollbars } from 'react-custom-scrollbars';
-import { useSelector } from 'react-redux';
-import { AtbdTopDropdwon } from './auth-info-style';
-import { Popover } from '../../popup/popup';
-import Heading from '../../heading/heading';
+import React from "react";
+import { Badge } from "antd";
+import FeatherIcon from "feather-icons-react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+// import { Scrollbars } from "react-custom-scrollbars";
+import { useSelector } from "react-redux";
+import { AtbdTopDropdwon } from "./auth-info-style";
+import { Popover } from "../../popup/popup";
+import Heading from "../../heading/heading";
 
 const MessageBox = () => {
-  const { rtl } = useSelector(state => {
+  const { rtl } = useSelector((state) => {
     return {
       rtl: state.ChangeLayoutMode.rtlData,
     };
@@ -19,29 +19,29 @@ const MessageBox = () => {
   const renderThumb = ({ style, ...props }) => {
     const thumbStyle = {
       borderRadius: 6,
-      backgroundColor: '#F1F2F6',
+      backgroundColor: "#F1F2F6",
     };
     return <div style={{ ...style, ...thumbStyle }} props={props} />;
   };
 
   const renderTrackVertical = () => {
     const thumbStyle = {
-      position: 'absolute',
-      width: '6px',
-      transition: 'opacity 200ms ease 0s',
+      position: "absolute",
+      width: "6px",
+      transition: "opacity 200ms ease 0s",
       opacity: 0,
-      [rtl ? 'left' : 'right']: '2px',
-      bottom: '2px',
-      top: '2px',
-      borderRadius: '3px',
+      [rtl ? "left" : "right"]: "2px",
+      bottom: "2px",
+      top: "2px",
+      borderRadius: "3px",
     };
     return <div className="hello" style={thumbStyle} />;
   };
 
   const renderView = ({ style, ...props }) => {
     const customStyle = {
-      marginRight: rtl && 'auto',
-      [rtl ? 'marginLeft' : 'marginRight']: '-17px',
+      marginRight: rtl && "auto",
+      [rtl ? "marginLeft" : "marginRight"]: "-17px",
     };
     return <div {...props} style={{ ...style, ...customStyle }} />;
   };
@@ -60,7 +60,7 @@ const MessageBox = () => {
         <span className="title-text">Messages</span>
         <Badge className="badge-success" count={3} />
       </Heading>
-      <Scrollbars
+      {/* <Scrollbars
         autoHeight
         autoHide
         renderThumbVertical={renderThumb}
@@ -72,13 +72,18 @@ const MessageBox = () => {
             <li>
               <Link to="#">
                 <figure className="atbd-top-dropdwon__content">
-                  <img src={require('../../../static/img/avatar/NoPath.png')} alt="" />
+                  <img
+                    src={require("../../../static/img/avatar/NoPath.png")}
+                    alt=""
+                  />
                   <figcaption>
                     <Heading as="h5">
                       Software <span className="color-success">3 hrs ago</span>
                     </Heading>
                     <div>
-                      <span className="atbd-top-dropdwonText">Lorem ipsum dolor amet cosec...</span>
+                      <span className="atbd-top-dropdwonText">
+                        Lorem ipsum dolor amet cosec...
+                      </span>
                       <span>
                         <Badge className="badge-success" count={3} />
                       </span>
@@ -90,13 +95,18 @@ const MessageBox = () => {
             <li>
               <Link to="#">
                 <figure className="atbd-top-dropdwon__content">
-                  <img src={require('../../../static/img/avatar/NoPath.png')} alt="" />
+                  <img
+                    src={require("../../../static/img/avatar/NoPath.png")}
+                    alt=""
+                  />
                   <figcaption>
                     <Heading as="h5">
                       Software <span className="color-success">3 hrs ago</span>
                     </Heading>
                     <div>
-                      <span className="atbd-top-dropdwonText">Lorem ipsum dolor amet cosec...</span>
+                      <span className="atbd-top-dropdwonText">
+                        Lorem ipsum dolor amet cosec...
+                      </span>
                       <span>
                         <Badge className="badge-success" count={3} />
                       </span>
@@ -108,13 +118,18 @@ const MessageBox = () => {
             <li>
               <Link to="#">
                 <figure className="atbd-top-dropdwon__content">
-                  <img src={require('../../../static/img/avatar/NoPath.png')} alt="" />
+                  <img
+                    src={require("../../../static/img/avatar/NoPath.png")}
+                    alt=""
+                  />
                   <figcaption>
                     <Heading as="h5">
                       Software <span className="color-success">3 hrs ago</span>
                     </Heading>
                     <div>
-                      <span className="atbd-top-dropdwonText">Lorem ipsum dolor amet cosec...</span>
+                      <span className="atbd-top-dropdwonText">
+                        Lorem ipsum dolor amet cosec...
+                      </span>
                       <span>
                         <Badge className="badge-success" count={3} />
                       </span>
@@ -126,13 +141,18 @@ const MessageBox = () => {
             <li>
               <Link to="#">
                 <figure className="atbd-top-dropdwon__content">
-                  <img src={require('../../../static/img/avatar/NoPath.png')} alt="" />
+                  <img
+                    src={require("../../../static/img/avatar/NoPath.png")}
+                    alt=""
+                  />
                   <figcaption>
                     <Heading as="h5">
                       Software <span className="color-success">3 hrs ago</span>
                     </Heading>
                     <div>
-                      <span className="atbd-top-dropdwonText">Lorem ipsum dolor amet cosec...</span>
+                      <span className="atbd-top-dropdwonText">
+                        Lorem ipsum dolor amet cosec...
+                      </span>
                       <span>
                         <Badge className="badge-success" count={3} />
                       </span>
@@ -144,13 +164,18 @@ const MessageBox = () => {
             <li>
               <Link to="#">
                 <figure className="atbd-top-dropdwon__content">
-                  <img src={require('../../../static/img/avatar/NoPath.png')} alt="" />
+                  <img
+                    src={require("../../../static/img/avatar/NoPath.png")}
+                    alt=""
+                  />
                   <figcaption>
                     <Heading as="h5">
                       Software <span className="color-success">3 hrs ago</span>
                     </Heading>
                     <div>
-                      <span className="atbd-top-dropdwonText">Lorem ipsum dolor amet cosec...</span>
+                      <span className="atbd-top-dropdwonText">
+                        Lorem ipsum dolor amet cosec...
+                      </span>
                       <span>
                         <Badge className="badge-success" count={3} />
                       </span>
@@ -162,7 +187,7 @@ const MessageBox = () => {
             <ul />
           </ul>
         </div>
-      </Scrollbars>
+      </Scrollbars> */}
       <Link className="btn-seeAll" to="#">
         See all messages
       </Link>
