@@ -125,6 +125,22 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu, events }) => {
           Banner
         </NavLink>
       </Menu.Item>
+
+      <Menu.Item
+        icon={!topMenu && <FeatherIcon icon="activity" />}
+        onClick={() => navigate(`/advertisment`)}
+        key="advertisment"
+      >
+        <NavLink
+          onClick={toggleCollapsed}
+          to={{
+            pathname: `/advertisment`,
+            pageName: "advertisment",
+          }}
+        >
+          Advertisement
+        </NavLink>
+      </Menu.Item>
     </Menu>
   );
 };

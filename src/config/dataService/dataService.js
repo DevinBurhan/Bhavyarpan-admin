@@ -29,6 +29,7 @@ class DataService {
     }
 
     static post(path = "", data = {}, optionalHeader = {}) {
+        console.log("path-------", path);
         return client({
             method: "POST",
             url: path,

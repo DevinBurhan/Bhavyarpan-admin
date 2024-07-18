@@ -5,6 +5,7 @@ import CategoryPage from "../../container/category/category";
 import SubCategoryPage from "../../container/category/subcategory";
 import AddUpdateProduct from "../../container/productMaster/AddUpdateProduct";
 import ProductMasterPage from "../../container/productMaster/productMaster";
+import AdvertismentPage from "../../container/advertisment/advertisment";
 const Dashboard = lazy(() => import("../../container/dashboard"));
 
 const DashboardRoutes = () => {
@@ -16,6 +17,7 @@ const DashboardRoutes = () => {
       <Route exact path={"/productMaster"} component={ProductMasterPage} />
       <Route exact path={"/productMaster/add"} component={AddUpdateProduct} />
       <Route exact path={"/banner"} component={BannerPage} />
+      <Route exact path={"/advertisment"} component={AdvertismentPage} />
     </Routes>
   );
 };
