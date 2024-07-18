@@ -7,6 +7,8 @@ import { addCategoiryAPI, deleteCategoiryAPI, getCategoiryAPI, updateCategoiryAP
 const CategoryPage = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
     const [modalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false); //loadder
     const [selectedId, setSelectedId] = useState(null);
@@ -16,15 +18,24 @@ const CategoryPage = () => {
     const data = useSelector((state) => state.categoryReducer.Categories);
 
     useEffect(() => {
-        getCategoryList();
+        getApi(true, page, limit);
     }, []);
 
-    const getCategoryList = async () => {
+    const getApi = async (pagination, page, limit) => {
         setIsLoading(true);
-        await dispatch(getCategoiryAPI());
+        let params = {
+            pagination,
+            page,
+            limit,
+        };
+        await dispatch(getCategoiryAPI(params));
         setIsLoading(false);
     };
 
+    const onPageChange = async (page) => {
+        setPage(page);
+        getApi(true, page, limit);
+    };
     const onFinish = async (values) => {
         setIsLoading(true);
         const form_data = new FormData();
@@ -62,9 +73,9 @@ const CategoryPage = () => {
             setIsModalOpen(false);
             setMediaPreview();
             setMediaFile();
-            getCategoryList();
+            getApi(true, page, limit);
         } else {
-            getCategoryList();
+            getApi(true, page, limit);
         }
     };
 
@@ -83,7 +94,7 @@ const CategoryPage = () => {
                 if (record._id) {
                     let resp = await dispatch(deleteCategoiryAPI(record._id));
                     if (resp) {
-                        getCategoryList();
+                        getApi(true, page, limit);
                     }
                 }
             },
@@ -93,7 +104,7 @@ const CategoryPage = () => {
         setIsModalOpen(false);
         setMediaFile();
         setMediaPreview();
-        setSelectedId(null);
+        setSelectedId();
         form.resetFields();
     };
 
@@ -108,7 +119,7 @@ const CategoryPage = () => {
             title: "Sr. No",
             dataIndex: "serial",
             key: "serial",
-            render: (text, record, index) => index + 1,
+            render: (text, object, index) => index + 1 + (page - 1) * limit,
         },
         {
             title: "Title",
@@ -152,10 +163,17 @@ const CategoryPage = () => {
                     <Col>
                         <Row gutter={[20, 20]}>
                             <Col>
-                                <Input type="search" placeholder={"Search categroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} />
+                                {/* <Input type="search" placeholder={"Search categroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} /> */}
                             </Col>
                             <Col>
-                                <Button style={{ height: "47.56px" }} type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
+                                <Button
+                                    style={{ height: "47.56px" }}
+                                    type="primary"
+                                    icon={<PlusOutlined />}
+                                    onClick={() => {
+                                        setIsModalOpen(true);
+                                    }}
+                                >
                                     Add Category
                                 </Button>
                             </Col>
@@ -163,7 +181,18 @@ const CategoryPage = () => {
                     </Col>
                 </Row>
 
-                <Table columns={columns} dataSource={data?.data} loading={isLoading} />
+                <Table
+                    columns={columns}
+                    dataSource={data?.data}
+                    loading={isLoading}
+                    pagination={{
+                        showSizeChanger: false,
+                        pageSize: limit,
+                        total: data?.totalCount,
+                        current: page,
+                        onChange: onPageChange,
+                    }}
+                />
 
                 <Modal
                     title={selectedId !== null ? "Edit Category" : "Add Category"}

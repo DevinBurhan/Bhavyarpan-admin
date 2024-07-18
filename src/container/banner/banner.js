@@ -19,6 +19,7 @@ const BannerPage = () => {
     const [mediaPreviewSmall, setMediaPreviewSmall] = useState(); //store preview img
 
     const data = useSelector((state) => state?.bannerReducer?.banner);
+    console.log("file: banner.js:22  BannerPage  data", data);
     const categoryList = useSelector((state) => state?.categoryReducer?.Categories);
     console.log("file: banner.js:22  BannerPage  categoryList", categoryList);
 
@@ -34,7 +35,10 @@ const BannerPage = () => {
     };
     const getCategoryList = async () => {
         setIsLoading(true);
-        await dispatch(getCategoiryAPI());
+        let params = {
+            pagination: false,
+        };
+        await dispatch(getCategoiryAPI(params));
         setIsLoading(false);
     };
 
@@ -96,6 +100,7 @@ const BannerPage = () => {
                 console.log("pair : ", pair);
             }
             resp = await dispatch(updateBannerAPI(selectedId, form_data)); //update api
+            console.log("file: banner.js:103  handleFinish  respdsfsdfsdf", resp);
         } else {
             //add logic
             if (!mediaFileLarge) {

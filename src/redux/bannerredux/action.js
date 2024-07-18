@@ -4,25 +4,25 @@ const actions = {
     BANNER_UPDATE: "BANNER_UPDATE",
     BANNER_DELETE: "PRODUCTMASTER_DELETE",
 
-    getbanner: (data) => {
+    getBanner: (data) => {
         return {
             type: actions.BANNER_GET,
             data,
         };
     },
-    addbanner: (data) => {
+    addBanner: (data) => {
         return {
             type: actions.BANNER_ADD,
             data,
         };
     },
-    updatebanner: (data) => {
+    updateBanner: (data) => {
         return {
             type: actions.BANNER_UPDATE,
             data,
         };
     },
-    deletebanner: (data) => {
+    deleteBanner: (data) => {
         return {
             type: actions.BANNER_DELETE,
             data,

@@ -2,35 +2,49 @@ import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant
 import { Button, Col, Form, Input, Modal, Row, Select, Space, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addSubcategoryAPI, deleteSubcategoryAPI, getSubcategoriesAPI, updateSubcategoryAPI } from "../../redux/subcategoryredux/actionCreator";
 import { getCategoiryAPI } from "../../redux/categoryredux/actionCreator";
+import { addSubcategoryAPI, deleteSubcategoryAPI, getSubcategoriesAPI, updateSubcategoryAPI } from "../../redux/subcategoryredux/actionCreator";
 
 const SubCategoryPage = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
-    const [dataSource, setDataSource] = useState([]);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedsubCategory, setSelectedsubCategory] = useState(null);
     const [isLoading, setIsLoading] = useState(false); //loadder
     const [selectedId, setSelectedId] = useState(null);
 
     const data = useSelector((state) => state?.subcategoryReducer?.subCategory);
+    console.log("file: subcategory.js:18  SubCategoryPage  data", data);
     const categoryList = useSelector((state) => state?.categoryReducer?.Categories);
     console.log("file: SubCategory.js:22  SubCategoryPage  categoryList", data);
 
     useEffect(() => {
-        getApi();
+        getApi(true, page, limit);
         getCategoryList();
     }, []);
 
-    const getApi = async () => {
+    const getApi = async (pagination, page, limit) => {
         setIsLoading(true);
-        await dispatch(getSubcategoriesAPI());
+        let params = {
+            pagination,
+            page,
+            limit,
+        };
+        await dispatch(getSubcategoriesAPI(params));
         setIsLoading(false);
+    };
+    const onPageChange = async (page) => {
+        setPage(page);
+        getApi(true, page, limit);
     };
     const getCategoryList = async () => {
         setIsLoading(true);
-        await dispatch(getCategoiryAPI());
+        let params = {
+            pagination: false,
+        };
+        await dispatch(getCategoiryAPI(params));
         setIsLoading(false);
     };
 
@@ -61,20 +75,12 @@ const SubCategoryPage = () => {
     };
     const handleFinish = async (values) => {
         setIsLoading(true);
-        // const form_data = new FormData();
-
-        // form_data.append("title", values.title);
-        // form_data.append("description", values.description);
-        // form_data.append("category", values.category);
 
         let resp;
 
         if (selectedId !== null) {
             //update logic
 
-            for (const pair of form_data.entries()) {
-                console.log("pair : ", pair);
-            }
             resp = await dispatch(updateSubcategoryAPI(selectedId, values)); //update api
         } else {
             //add logic
@@ -84,9 +90,9 @@ const SubCategoryPage = () => {
         // console.log("safdsfgf");
         if (resp) {
             handleCancel();
-            getApi();
+            getApi(true, page, limit);
         } else {
-            getApi();
+            getApi(true, page, limit);
         }
     };
 
@@ -95,7 +101,7 @@ const SubCategoryPage = () => {
             title: "Sr. No",
             dataIndex: "key",
             key: "key",
-            render: (text, record, index) => index + 1,
+            render: (text, object, index) => index + 1 + (page - 1) * limit,
         },
         {
             title: "Title",
@@ -132,9 +138,7 @@ const SubCategoryPage = () => {
                 </Col>
                 <Col>
                     <Row gutter={[20, 20]}>
-                        <Col>
-                            <Input type="search" placeholder={"Search categroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} />
-                        </Col>
+                        <Col>{/* <Input type="search" placeholder={"Search categroy"} style={{ marginBottom: "25px" }} prefix={<SearchOutlined />} /> */}</Col>
                         <Col>
                             <Button style={{ height: "47.56px" }} type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
                                 Add Subcategory
@@ -144,7 +148,18 @@ const SubCategoryPage = () => {
                 </Col>
             </Row>
 
-            <Table dataSource={data && data.data ? data.data : []} columns={columns} loading={isLoading} />
+            <Table
+                dataSource={data && data.data ? data.data : []}
+                columns={columns}
+                loading={isLoading}
+                pagination={{
+                    showSizeChanger: false,
+                    pageSize: limit,
+                    total: data?.totalCount,
+                    current: page,
+                    onChange: onPageChange,
+                }}
+            />
 
             <Modal
                 title={selectedsubCategory ? "Edit subCategory" : "Add subCategory"}
@@ -166,6 +181,7 @@ const SubCategoryPage = () => {
                     </Form.Item>
                     <Form.Item label="Select Category" name="category" rules={[{ required: true, message: "Please input the description!" }]}>
                         <Select
+                            size="large"
                             showSearch
                             placeholder="Select Category"
                             filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}

@@ -2,15 +2,15 @@ import { message } from "antd";
 import { API } from "../../config/api";
 import { DataService } from "../../config/dataService/dataService";
 import actions from "./action";
+import { paramsToQueryString } from "../../utility/commonFunction";
 
-const { getCategory, addCategory, categoryErr, updateCategory, deleteCategory } = actions;
+const { getCategory, addCategory, updateCategory, deleteCategory } = actions;
 
-export const getCategoiryAPI = () => {
+export const getCategoiryAPI = (params) => {
     return async (dispatch) => {
         try {
-            const resp = await DataService.get(API.category.get, {
-                pagination: true, // Include pagination parameter
-            });
+            let queryString = paramsToQueryString(params);
+            const resp = await DataService.get(API.category.get + queryString);
             if (resp.data.message) {
                 dispatch(getCategory(resp.data));
 
@@ -19,7 +19,6 @@ export const getCategoiryAPI = () => {
                 return false;
             }
         } catch (err) {
-            dispatch(categoryErr(err));
             message.error("Failed to fetch categories");
             return false;
         }
@@ -40,7 +39,6 @@ export const addCategoiryAPI = (payload) => {
                 return false;
             }
         } catch (err) {
-            dispatch(categoryErr(err));
             message.error("Failed to add categories");
             return false;
         }
@@ -80,7 +78,6 @@ export const deleteCategoiryAPI = (categoryId) => {
                 return false;
             }
         } catch (err) {
-            dispatch(categoryErr(err));
             message.error("Failed to delete categories");
             return false;
         }
