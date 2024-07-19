@@ -192,12 +192,12 @@ const AdvertismentPage = () => {
         <Col>
           <Row gutter={[20, 20]}>
             <Col>
-              <Input
+              {/* <Input
                 type="search"
                 placeholder="Search Advertisement"
                 style={{ marginBottom: "25px" }}
                 prefix={<SearchOutlined />}
-              />
+              /> */}
             </Col>
             <Col>
               <Button
@@ -259,13 +259,17 @@ const AdvertismentPage = () => {
             {type === "video" && <p></p>}
           </Form.Item>
 
-          <Form.Item
-            label="Duration"
-            name="duration"
-            rules={[{ required: true, message: "Please input the duration!" }]}
-          >
-            <Input />
-          </Form.Item>
+          {type !== "image" && (
+            <Form.Item
+              label="Duration"
+              name="duration"
+              rules={[
+                { required: true, message: "Please input the duration!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          )}
         </Form>
       </Modal>
     </div>

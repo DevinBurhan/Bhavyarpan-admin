@@ -235,12 +235,12 @@ const BannerPage = () => {
         <Col>
           <Row gutter={[20, 20]}>
             <Col>
-              <Input
+              {/* <Input
                 type="search"
                 placeholder={"Search categroy"}
                 style={{ marginBottom: "25px" }}
                 prefix={<SearchOutlined />}
-              />
+              /> */}
             </Col>
             <Col>
               <Button

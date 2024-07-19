@@ -10,6 +10,7 @@ import SubCategoryPage from "../../container/category/subcategory";
 import AddUpdateProduct from "../../container/productMaster/AddUpdateProduct";
 import ProductMasterPage from "../../container/productMaster/productMaster";
 import UploadPage from "../../container/Upload/Upload";
+import AdvertismentPage from "../../container/advertisment/advertisment";
 
 const Admin = () => {
   return (
@@ -32,6 +33,7 @@ const Admin = () => {
         />
         <Route exact path={"/banner"} element={<BannerPage />} />
         <Route exact path={"/upload"} element={<UploadPage />} />
+        <Route exact path={"/advertisment"} element={<AdvertismentPage />} />
       </Routes>
     </Suspense>
   );
