@@ -1,9 +1,4 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -40,11 +35,9 @@ const BannerPage = () => {
   const [mediaPreviewSmall, setMediaPreviewSmall] = useState(); //store preview img
 
   const data = useSelector((state) => state?.bannerReducer?.banner);
-  console.log("file: banner.js:22  BannerPage  data", data);
   const categoryList = useSelector(
     (state) => state?.categoryReducer?.Categories
   );
-  console.log("file: banner.js:22  BannerPage  categoryList", categoryList);
 
   useEffect(() => {
     getApi();
@@ -123,7 +116,6 @@ const BannerPage = () => {
         console.log("pair : ", pair);
       }
       resp = await dispatch(updateBannerAPI(selectedId, form_data)); //update api
-      console.log("file: banner.js:103  handleFinish  respdsfsdfsdf", resp);
     } else {
       //add logic
       if (!mediaFileLarge) {
@@ -309,7 +301,6 @@ const BannerPage = () => {
               {categoryList?.data?.length > 0 &&
                 categoryList.data.map((item, ind) => (
                   <Select.Option key={ind} value={item._id}>
-                    {console.log("item", item)}
                     {item?.title}
                   </Select.Option>
                 ))}

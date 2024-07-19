@@ -28,7 +28,6 @@ export const getCategoiryAPI = (params) => {
 export const addCategoiryAPI = (payload) => {
   return async (dispatch) => {
     try {
-      console.log("resp", API.category.add);
       const resp = await DataService.post(API.category.add, payload);
       // console.log("resp", resp);
       if (resp.data.status) {
@@ -70,9 +69,7 @@ export const updateCategoiryAPI = (categoryId, payload) => {
 export const deleteCategoiryAPI = (categoryId) => {
   return async (dispatch) => {
     try {
-      console.log("skjdfgjsdgbfhjsfdgjhfsd", categoryId);
       const resp = await DataService.delete(API.category.delete + categoryId);
-      console.log("resp", resp);
       if (resp.data.status) {
         // dispatch(deleteCategory(resp.data));
         message.success(resp.data.message);

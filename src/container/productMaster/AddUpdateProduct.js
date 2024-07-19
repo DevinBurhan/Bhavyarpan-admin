@@ -38,7 +38,6 @@ const AddUpdateProduct = () => {
   const [isLoading, setIsLoading] = useState(false); //loadder
   const [value, setValue] = useState(false);
   const [imagesArray, setImagesArray] = useState([]);
-  console.log("🚀 ~ AddUpdateProduct ~ imagesArray:", imagesArray);
   const [mainImgPreview, setMainImgPreview] = useState();
   const [mainImgFile, setMainImgFile] = useState();
   const [behindImgPreview, setBehindImgPreview] = useState();

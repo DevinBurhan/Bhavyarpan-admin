@@ -27,6 +27,7 @@ const API = {
     add: "productMaster/create",
     update: "productMaster/",
     delete: "productMaster/",
+    upload: "productMaster/import-product",
   },
   banner: {
     get: "banner/list",

@@ -67,7 +67,7 @@ const AdvertismentPage = () => {
         form_data.append("adsUrl", mediaFile);
       }
       for (const pair of form_data.entries()) {
-        console.log("pair : ", pair);
+        // console.log("pair : ", pair);
       }
 
       resp = await dispatch(updateAdvertismentAPI(selectedId, form_data));

@@ -186,7 +186,6 @@ const UploadPage = () => {
     obj.src = await getBase64(file.file.originFileObj);
     obj.id = file.file.uid;
     obj.file = file.file;
-    console.log("objobj", obj);
     newImageTemp.push(obj);
     setImagesArray(newImageTemp);
 

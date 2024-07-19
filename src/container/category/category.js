@@ -1,9 +1,4 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -100,7 +95,6 @@ const CategoryPage = () => {
   };
 
   const handleEdit = async (record) => {
-    console.log("record", record._id);
     setMediaPreview(record.image);
     setSelectedId(record._id);
     setIsModalOpen(true);

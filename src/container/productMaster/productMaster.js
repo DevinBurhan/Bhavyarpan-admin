@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Col, Modal, Row, Space, Table, Upload } from "antd";
+import { Button, Col, message, Modal, Row, Space, Table, Upload } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -7,10 +7,15 @@ import { Link } from "react-router-dom";
 import {
   deleteproductMasterAPI,
   getproductMasterAPI,
+  uploadProductMasterAPI,
 } from "../../redux/productMasterredux/actionCreator";
 
-import DOWNLOAD_FILE_NAME from "../../assets/bhavyarpan-csv-template.csv";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
+import {
+  Download,
+  UploadCloud,
+} from "feather-icons-react/build/IconComponents";
+import DOWNLOAD_FILE_NAME from "../../assets/bhavyarpan-csv-template.csv";
 
 const ProductMasterPage = () => {
   const dispatch = useDispatch();
@@ -45,7 +50,22 @@ const ProductMasterPage = () => {
   const handleCsvChange = (file) => {
     setIsCsvFile(file.file.originFileObj);
   };
-  const onFinish = async (values) => {};
+  const onFinish = async (values) => {
+    setIsLoading(true);
+    const form_data = new FormData();
+    if (csvFile) {
+      form_data.append("uploadFile", csvFile);
+      let resp = await dispatch(uploadProductMasterAPI(form_data));
+      if (resp) {
+        setIsModalOpen(false);
+        setIsCsvFile();
+        getApi(true, page, limit);
+      }
+    } else {
+      message.error("Please add CSV File");
+    }
+    setIsLoading(false);
+  };
 
   const handleDelete = (record) => {
     Modal.confirm({
@@ -155,7 +175,7 @@ const ProductMasterPage = () => {
                 rel="noreferrer noopener"
                 download={DOWNLOAD_FILE_NAME}
               >
-                <Button type="primary" icon={<PlusOutlined />}>
+                <Button type="primary" icon={<Download size={20} />}>
                   Download Template
                 </Button>
               </a>
@@ -163,7 +183,7 @@ const ProductMasterPage = () => {
             <Col>
               <Button
                 type="primary"
-                icon={<PlusOutlined />}
+                icon={<UploadCloud size={20} />}
                 onClick={() => setIsModalOpen(true)}
               >
                 Upload CSV

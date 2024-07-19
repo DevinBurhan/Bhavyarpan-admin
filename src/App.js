@@ -23,10 +23,7 @@ const ProviderConfig = () => {
   });
 
   const [path, setPath] = useState(window.location.pathname);
-  console.log(
-    "🚀 ~ const{rtl,isLoggedIn,topMenu,darkMode}=useSelector ~ isLoggedIn:",
-    isLoggedIn
-  );
+
   useEffect(() => {
     let unmounted = false;
     if (!unmounted) {
