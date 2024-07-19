@@ -1,18 +1,23 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Modal, Space, Table } from "antd";
+import { Button, Col, Modal, Row, Space, Table, Upload } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { Link } from "react-router-dom";
 import {
   deleteproductMasterAPI,
   getproductMasterAPI,
 } from "../../redux/productMasterredux/actionCreator";
-import { Link } from "react-router-dom";
+
+import DOWNLOAD_FILE_NAME from "../../assets/bhavyarpan-csv-template.csv";
+import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 
 const ProductMasterPage = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [csvFile, setIsCsvFile] = useState();
   const [isLoading, setIsLoading] = useState(false); //loadder
 
   const data = useSelector(
@@ -36,12 +41,10 @@ const ProductMasterPage = () => {
     setPage(page);
     getApi(true, page, limit);
   };
-  const handleModalOpen = () => {};
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
+  const handleCsvChange = (file) => {
+    setIsCsvFile(file.file.originFileObj);
   };
-
   const onFinish = async (values) => {};
 
   const handleDelete = (record) => {
@@ -138,27 +141,44 @@ const ProductMasterPage = () => {
   ];
 
   return (
-    <div style={{ padding: 30 }}>
-      <h1 className="col-lg" style={{ fontSize: "2em" }}>
-        Product Master
-      </h1>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: 16,
-        }}
-      >
-        {/* <Button type="default" icon={<SearchOutlined />} style={{ marginRight: 10 }}>
-                    Search
-                </Button> */}
-        <Link to={`/productMaster/add`}>
-          <Button type="primary" icon={<PlusOutlined />}>
-            Add ProductMaster
-          </Button>
-        </Link>
-      </div>
+    <div className="pageHeading">
+      <Row gutter={20} justify={"space-between"}>
+        <Col>
+          <h2>Banner</h2>
+        </Col>
+        <Col>
+          <Row gutter={[20, 20]}>
+            <Col>
+              <a
+                href={DOWNLOAD_FILE_NAME}
+                target="_blank"
+                rel="noreferrer noopener"
+                download={DOWNLOAD_FILE_NAME}
+              >
+                <Button type="primary" icon={<PlusOutlined />}>
+                  Download Template
+                </Button>
+              </a>
+            </Col>
+            <Col>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setIsModalOpen(true)}
+              >
+                Upload CSV
+              </Button>
+            </Col>
+            <Col>
+              <Link to={`/productMaster/add`}>
+                <Button type="primary" icon={<PlusOutlined />}>
+                  Add Product
+                </Button>
+              </Link>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
 
       <Table
         loading={isLoading}
@@ -172,6 +192,78 @@ const ProductMasterPage = () => {
           onChange: onPageChange,
         }}
       />
+
+      <Modal
+        title={"Upload CSv "}
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onOk={onFinish}
+        destroyOnClose
+        okText="Submit"
+        cancelText="Cancel"
+        confirmLoading={isLoading}
+      >
+        <Row justify={"center"}>
+          <Col xs={24} md={6}>
+            <Upload
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              onChange={handleCsvChange}
+              multiple={false}
+            >
+              <Button>
+                <FeatherIcon icon="upload-cloud" />
+                Click To Upload
+              </Button>
+            </Upload>
+          </Col>
+          {csvFile && (
+            <Col
+              xs={24}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "20px",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  marginLeft: "70px",
+                  cursor: "pointer",
+                }}
+                onClick={() => setIsCsvFile()}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M12 22.5C17.799 22.5 22.5 17.799 22.5 12C22.5 6.20101 17.799 1.5 12 1.5C6.20101 1.5 1.5 6.20101 1.5 12C1.5 17.799 6.20101 22.5 12 22.5Z"
+                    fill="#ED5565"
+                  />
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M8.81797 15.8891L15.889 8.81809C16.084 8.62309 16.084 8.30609 15.889 8.11109C15.694 7.91609 15.377 7.91609 15.182 8.11109L8.11097 15.1821C7.91597 15.3771 7.91597 15.6941 8.11097 15.8891C8.30597 16.0841 8.62297 16.0841 8.81797 15.8891Z"
+                    fill="#F3F3F3"
+                  />
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M15.889 15.1821L8.81797 8.11109C8.62297 7.91609 8.30597 7.91609 8.11097 8.11109C7.91597 8.30609 7.91597 8.62309 8.11097 8.81809L15.182 15.8891C15.377 16.0841 15.694 16.0841 15.889 15.8891C16.084 15.6941 16.084 15.3771 15.889 15.1821Z"
+                    fill="#F3F3F3"
+                  />
+                </svg>
+              </div>
+              <FeatherIcon icon="file-text" size={100} />
+            </Col>
+          )}
+        </Row>
+      </Modal>
     </div>
   );
 };
