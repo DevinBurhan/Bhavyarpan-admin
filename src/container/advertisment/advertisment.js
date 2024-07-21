@@ -2,7 +2,13 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Form, Input, Modal, Radio, Row, Select, Space, Switch, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addAdvertismentAPI, deleteAdvertismentAPI, getAdvertismentAPI, updateAdvertismentAPI } from "../../redux/advertismentredux/actionCreator";
+import {
+    addAdvertismentAPI,
+    deleteAdvertismentAPI,
+    getAdvertismentAPI,
+    updateAdvertismentAPI,
+    isActiveAdvertismentAPI,
+} from "../../redux/advertismentredux/actionCreator";
 
 const { Option } = Select;
 
@@ -112,9 +118,15 @@ const AdvertismentPage = () => {
     const handleTypeChange = (value) => {
         setType(value);
     };
-    const handleChangeStatus = (value) => {
-        // call api with set opposite value
-        console.log("file: advertisment.js:116  handleChangeStatus  value", !value);
+
+    const handleChangeStatus = async (isActive, record) => {
+        const payload = {
+            isActive: !isActive,
+        };
+        const resp = await dispatch(isActiveAdvertismentAPI(record._id, payload));
+        if (resp) {
+            getAdverismentList();
+        }
     };
 
     const columns = [
@@ -145,7 +157,7 @@ const AdvertismentPage = () => {
             dataIndex: "isActive",
             key: "isActive",
             render: (isActive, record) => {
-                return <Switch value={isActive} onChange={() => handleChangeStatus(isActive)} />;
+                return <Switch checked={isActive} onChange={() => handleChangeStatus(isActive, record)} />;
             },
         },
 
