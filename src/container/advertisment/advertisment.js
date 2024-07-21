@@ -1,13 +1,13 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Input, Modal, Radio, Row, Select, Space, Switch, Table, message } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Select, Space, Switch, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     addAdvertismentAPI,
     deleteAdvertismentAPI,
     getAdvertismentAPI,
-    updateAdvertismentAPI,
     isActiveAdvertismentAPI,
+    updateAdvertismentAPI,
 } from "../../redux/advertismentredux/actionCreator";
 
 const { Option } = Select;
@@ -66,11 +66,8 @@ const AdvertismentPage = () => {
         }
 
         if (resp) {
-            form.resetFields();
-            setSelectedId();
-            setIsModalOpen(false);
-            setMediaPreview();
-            setMediaFile();
+            handleCancel();
+            setIsLoading(false);
             getApi();
         } else {
             setIsLoading(false);
@@ -78,7 +75,9 @@ const AdvertismentPage = () => {
     };
 
     const handleEdit = async (record) => {
+        console.log("recordrecord", record);
         setSelectedId(record._id);
+        setType(record.type);
         setMediaPreview(record.adsUrl);
         setIsModalOpen(true);
         form.setFieldsValue(record);
@@ -101,6 +100,7 @@ const AdvertismentPage = () => {
     const handleCancel = () => {
         setIsModalOpen(false);
         setMediaFile();
+        setType("image");
         setMediaPreview();
         setSelectedId(null);
         form.resetFields();
@@ -229,17 +229,17 @@ const AdvertismentPage = () => {
                         />
                         {mediaPreview && type === "image" ? (
                             <img alt="Preview" src={mediaPreview} width={100} height={100} style={{ float: "right", objectFit: "contain", marginTop: 10 }} />
-                        ) : (
+                        ) : mediaPreview && type === "image" ? (
                             <video controls src={mediaPreview} width={200} height={200} style={{ float: "right", objectFit: "contain", marginTop: 10 }} />
+                        ) : (
+                            <></>
                         )}
                         {type === "video" && <p></p>}
                     </Form.Item>
 
-                    {type !== "image" && (
-                        <Form.Item label="Duration" name="duration" rules={[{ required: true, message: "Please input the duration!" }]}>
-                            <Input />
-                        </Form.Item>
-                    )}
+                    <Form.Item label="Duration" name="duration" rules={[{ required: true, message: "Please input the duration!" }]}>
+                        <Input />
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>

@@ -116,6 +116,7 @@ const AddUpdateProduct = () => {
         obj.src = await getBase64(file.file.originFileObj);
         obj.id = file.file.uid;
         obj.file = file.file;
+
         newImageTemp.push(obj);
         setImagesArray(newImageTemp);
 
@@ -149,16 +150,17 @@ const AddUpdateProduct = () => {
             if (imagesArray !== "" && imagesArray.length > 0) {
                 if (imagesArray.length === 1) {
                     if (imagesArray[0].file) {
-                        form_data.append(
-                            `subsidaryImagesIndex[0]`,
-                            ...[imagesArray[0].file.originFileObj ? imagesArray[0].file.originFileObj : imagesArray[0].file]
-                        );
+                        form_data.append(`subsidaryImages`, ...[imagesArray[0].file.originFileObj ? imagesArray[0].file.originFileObj : imagesArray[0].file]);
+                        form_data.append(`subsidaryImagesIndex[0]`, 0);
                     }
                 } else {
+                    let count = 0;
                     for (let i = 0; i < imagesArray.length; i++) {
                         console.log("type of images ::", typeof imagesArray[i].file);
                         if (imagesArray[i].file) {
-                            form_data.append(`subsidaryImagesIndex[${i}]`, imagesArray[i].file.originFileObj);
+                            form_data.append(`subsidaryImages`, imagesArray[i].file.originFileObj);
+                            form_data.append(`subsidaryImagesIndex[${count}]`, i);
+                            count = count + 1;
                         }
                     }
                 }
