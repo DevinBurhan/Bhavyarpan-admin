@@ -25,15 +25,15 @@ const AdvertismentPage = () => {
     const data = useSelector((state) => state.advertismentReducer.getAdvertisment);
 
     useEffect(() => {
-        getAdverismentList();
+        getApi();
     }, []);
 
-    const getAdverismentList = async () => {
+    const getApi = async () => {
         setIsLoading(true);
         await dispatch(getAdvertismentAPI());
         setIsLoading(false);
     };
-    // console.log("getAdverismentList-----------", getAdverismentList);
+    // console.log("getApi-----------", getApi);
     const onFinish = async (values) => {
         setIsLoading(true);
         const form_data = new FormData();
@@ -71,7 +71,7 @@ const AdvertismentPage = () => {
             setIsModalOpen(false);
             setMediaPreview();
             setMediaFile();
-            getAdverismentList();
+            getApi();
         } else {
             setIsLoading(false);
         }
@@ -91,7 +91,7 @@ const AdvertismentPage = () => {
                 if (record._id) {
                     let resp = await dispatch(deleteAdvertismentAPI(record._id));
                     if (resp) {
-                        getAdverismentList();
+                        getApi();
                     }
                 }
             },
@@ -125,7 +125,7 @@ const AdvertismentPage = () => {
         };
         const resp = await dispatch(isActiveAdvertismentAPI(record._id, payload));
         if (resp) {
-            getAdverismentList();
+            getApi();
         }
     };
 
