@@ -236,7 +236,6 @@ const BannerPage = () => {
             </Col>
             <Col>
               <Button
-                style={{ height: "47.56px" }}
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={() => setIsModalOpen(true)}

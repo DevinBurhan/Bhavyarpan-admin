@@ -147,7 +147,7 @@ const UploadPage = () => {
     },
     {
       title: " Copy Url",
-      dataIndex: "image",
+      dataIndex: "imageUrl",
       key: "URL",
       render: (src) => <spna>{src}</spna>,
     },
@@ -212,7 +212,6 @@ const UploadPage = () => {
             </Col>
             <Col>
               <Button
-                style={{ height: "47.56px" }}
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={() => setIsModalOpen(true)}
