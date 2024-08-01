@@ -48,6 +48,12 @@ const API = {
         get: "upload/list",
         delete: "upload/delete-all",
     },
+    range: {
+        get: "explore-rang/list",
+        post: "explore-rang/create-explore-range",
+        put: "explore-rang/",
+        delete: "explore-rang/",
+    },
 };
 
 export { API };

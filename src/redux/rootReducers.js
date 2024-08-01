@@ -8,16 +8,18 @@ import bannerReducer from "./bannerredux/reducers";
 import uploadReducer from "./uploadredux/reducers";
 
 import advertismentReducer from "./advertismentredux/reducers";
+import rangeReducer from "./rangeRedux/reducers";
 
 const rootReducers = combineReducers({
-  auth: authReducer,
-  ChangeLayoutMode,
-  categoryReducer: categoryReducer,
-  subcategoryReducer: subcategoryReducer,
-  productMasterReducer: productMasterReducer,
-  bannerReducer: bannerReducer,
-  advertismentReducer: advertismentReducer,
-  uploadReducer,
+    auth: authReducer,
+    ChangeLayoutMode,
+    categoryReducer: categoryReducer,
+    subcategoryReducer: subcategoryReducer,
+    productMasterReducer: productMasterReducer,
+    bannerReducer: bannerReducer,
+    advertismentReducer: advertismentReducer,
+    uploadReducer,
+    rangeReducer,
 });
 
 export default rootReducers;
